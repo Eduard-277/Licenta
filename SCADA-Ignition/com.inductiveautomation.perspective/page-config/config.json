@@ -1,0 +1,37 @@
+{
+  "pages": {
+    "/alarms": {
+      "viewPath": "Alarms"
+    },
+    "/car": {
+      "title": "Car",
+      "viewPath": "Car"
+    },
+    "/crane": {
+      "viewPath": "Crane"
+    },
+    "/service": {
+      "title": "Service",
+      "viewPath": "service"
+    }
+  },
+  "sharedDocks": {
+    "cornerPriority": "top-bottom",
+    "left": [
+      {
+        "anchor": "fixed",
+        "autoBreakpoint": 480,
+        "content": "push",
+        "handle": "hide",
+        "iconUrl": "",
+        "id": "",
+        "modal": false,
+        "resizable": false,
+        "show": "visible",
+        "size": 300,
+        "viewParams": {},
+        "viewPath": "Menu"
+      }
+    ]
+  }
+}

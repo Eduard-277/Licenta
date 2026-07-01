@@ -1,0 +1,349 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {},
+  "root": {
+    "children": [
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label_1"
+            },
+            "position": {
+              "basis": "100px"
+            },
+            "props": {
+              "style": {
+                "backgroundColor": "#000000",
+                "color": "#FAFAFB",
+                "fontFamily": "Arial",
+                "fontSize": 40,
+                "fontStyle": "italic",
+                "fontWeight": "bold",
+                "padding": 25
+              },
+              "text": "Alarms",
+              "textStyle": {
+                "alignSelf": "flex-start"
+              }
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "children": [
+              {
+                "meta": {
+                  "name": "Label"
+                },
+                "position": {
+                  "basis": "150px",
+                  "grow": 1
+                },
+                "props": {
+                  "style": {
+                    "color": "#000000",
+                    "fontFamily": "inherit",
+                    "fontSize": 18,
+                    "fontWeight": "bold",
+                    "textAlign": "center"
+                  },
+                  "text": "Allow remote connection?"
+                },
+                "type": "ia.display.label"
+              },
+              {
+                "children": [
+                  {
+                    "meta": {
+                      "name": "FlexContainer_0"
+                    },
+                    "position": {
+                      "basis": "100px",
+                      "grow": 1
+                    },
+                    "type": "ia.container.flex"
+                  },
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "events": {
+                                  "component": {
+                                    "onActionPerformed": {
+                                      "config": {
+                                        "script": "    import time\n    \n    self.props.enabled \u003d False\n    \n    \n    read_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/crane/allow_remote\"\n    write_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/SCADA/crane/allow_remote\"\n    \n    read_value \u003d system.tag.readBlocking([read_tag_path])[0].value\n    sent_value \u003d system.tag.readBlocking([write_tag_path])[0].value\n    \n    int_read_value \u003d int(read_value)\n    int_sent_value \u003d int(sent_value)\n    \n    def send_delayed_command():\n\n        time.sleep(0.5) \n        \n        final_value \u003d 1\n        \t\n        system.tag.writeAsync([write_tag_path], [final_value])\n        self.props.enabled \u003d True\n\n    if int_sent_value \u003d\u003d 1:\n    \t\n        system.tag.writeAsync([write_tag_path], [read_value])\n        \n        \n    system.util.invokeAsynchronous(send_delayed_command)"
+                                      },
+                                      "scope": "G",
+                                      "type": "script"
+                                    }
+                                  }
+                                },
+                                "meta": {
+                                  "name": "Button"
+                                },
+                                "position": {
+                                  "basis": "212px",
+                                  "grow": 1
+                                },
+                                "props": {
+                                  "style": {
+                                    "backgroundColor": "#00AC00",
+                                    "boxShadow": "5"
+                                  },
+                                  "text": "Yes"
+                                },
+                                "type": "ia.input.button"
+                              }
+                            ],
+                            "meta": {
+                              "name": "FlexContainer_0"
+                            },
+                            "position": {
+                              "basis": "322.7px",
+                              "grow": 1
+                            },
+                            "type": "ia.container.flex"
+                          }
+                        ],
+                        "meta": {
+                          "name": "FlexContainer_0"
+                        },
+                        "position": {
+                          "basis": "100px",
+                          "grow": 1
+                        },
+                        "type": "ia.container.flex"
+                      },
+                      {
+                        "meta": {
+                          "name": "FlexContainer_2"
+                        },
+                        "position": {
+                          "basis": "44px",
+                          "grow": 1
+                        },
+                        "props": {
+                          "direction": "column"
+                        },
+                        "type": "ia.container.flex"
+                      },
+                      {
+                        "children": [
+                          {
+                            "events": {
+                              "component": {
+                                "onActionPerformed": {
+                                  "config": {
+                                    "script": "\n    import time\n    \n    self.props.enabled \u003d False\n    \n    \n    read_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/crane/allow_remote\"\n    write_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/SCADA/crane/allow_remote\"\n    \n    read_value \u003d system.tag.readBlocking([read_tag_path])[0].value\n    sent_value \u003d system.tag.readBlocking([write_tag_path])[0].value\n    \n    int_read_value \u003d int(read_value)\n    int_sent_value \u003d int(sent_value)\n    \n    def send_delayed_command():\n\n        time.sleep(0.5) \n        \n        final_value \u003d 2\n        \t\n        system.tag.writeAsync([write_tag_path], [final_value])\n        self.props.enabled \u003d True\n\n    if int_sent_value \u003d\u003d 2:\n    \t\n        system.tag.writeAsync([write_tag_path], [read_value])\n        \n        \n    system.util.invokeAsynchronous(send_delayed_command)"
+                                  },
+                                  "scope": "G",
+                                  "type": "script"
+                                }
+                              }
+                            },
+                            "meta": {
+                              "name": "Button"
+                            },
+                            "position": {
+                              "basis": "212px",
+                              "grow": 1
+                            },
+                            "props": {
+                              "style": {
+                                "backgroundColor": "#D90000",
+                                "boxShadow": "5"
+                              },
+                              "text": "No"
+                            },
+                            "type": "ia.input.button"
+                          }
+                        ],
+                        "meta": {
+                          "name": "FlexContainer_1"
+                        },
+                        "position": {
+                          "basis": "100px",
+                          "grow": 1
+                        },
+                        "type": "ia.container.flex"
+                      }
+                    ],
+                    "meta": {
+                      "name": "FlexContainer_1"
+                    },
+                    "position": {
+                      "basis": "250px",
+                      "grow": 1
+                    },
+                    "type": "ia.container.flex"
+                  },
+                  {
+                    "meta": {
+                      "name": "FlexContainer_2"
+                    },
+                    "position": {
+                      "basis": "100px",
+                      "grow": 1
+                    },
+                    "type": "ia.container.flex"
+                  }
+                ],
+                "meta": {
+                  "name": "FlexContainer"
+                },
+                "position": {
+                  "basis": "120px",
+                  "grow": 1
+                },
+                "props": {
+                  "direction": "column"
+                },
+                "type": "ia.container.flex"
+              },
+              {
+                "meta": {
+                  "name": "Label_1"
+                },
+                "position": {
+                  "basis": "30px",
+                  "grow": 1
+                },
+                "propConfig": {
+                  "props.text": {
+                    "binding": {
+                      "config": {
+                        "fallbackDelay": 2.5,
+                        "mode": "indirect",
+                        "references": {},
+                        "tagPath": "[MQTT Engine]Zenoh_router_tags/car/conn_req_timeout"
+                      },
+                      "transforms": [
+                        {
+                          "expression": "\"Time left: \" + numberFormat(toFloat(replace(toString({value}), \".\", \",\")), \"#,##0.00\") + \" s\"",
+                          "type": "expression"
+                        }
+                      ],
+                      "type": "tag"
+                    }
+                  }
+                },
+                "props": {
+                  "style": {
+                    "color": "#000000",
+                    "fontFamily": "inherit",
+                    "fontSize": 18,
+                    "fontWeight": "bold",
+                    "textAlign": "center"
+                  }
+                },
+                "type": "ia.display.label"
+              }
+            ],
+            "meta": {
+              "name": "FlexContainer_6"
+            },
+            "position": {
+              "basis": "100px"
+            },
+            "propConfig": {
+              "position.display": {
+                "binding": {
+                  "config": {
+                    "expression": "toFloat({[MQTT Engine]Zenoh_router_tags/car/conn_req_timeout}) !\u003d 0"
+                  },
+                  "type": "expr"
+                }
+              },
+              "props.style.classes": {
+                "binding": {
+                  "config": {
+                    "expression": "if(\r\n    toFloat({[MQTT Engine]Zenoh_router_tags/car/conn_req_timeout}) !\u003d 0,\r\n    \"Flicker\",\r\n    \"\"\r\n)"
+                  },
+                  "type": "expr"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "backgroundColor": "#D5D5D5"
+              }
+            },
+            "type": "ia.container.flex"
+          },
+          {
+            "meta": {
+              "name": "AlarmStatusTable"
+            },
+            "position": {
+              "basis": "400px",
+              "grow": 1
+            },
+            "props": {
+              "columns": {
+                "active": {
+                  "activeTime": {
+                    "sort": "descending",
+                    "strictWidth": true
+                  },
+                  "displayPath": {
+                    "enabled": false
+                  },
+                  "label": {
+                    "order": 6
+                  },
+                  "name": {
+                    "order": 5,
+                    "strictWidth": true,
+                    "width": 250
+                  },
+                  "notes": {
+                    "enabled": true
+                  },
+                  "priority": {
+                    "sort": "none",
+                    "strictWidth": true,
+                    "width": 100
+                  },
+                  "source": {
+                    "enabled": false
+                  },
+                  "state": {
+                    "sort": "none",
+                    "strictWidth": true,
+                    "width": 250
+                  }
+                }
+              }
+            },
+            "type": "ia.display.alarmstatustable"
+          }
+        ],
+        "meta": {
+          "name": "FlexContainer"
+        },
+        "position": {
+          "basis": "200px",
+          "grow": 1
+        },
+        "props": {
+          "direction": "column",
+          "style": {
+            "borderStyle": "solid"
+          }
+        },
+        "type": "ia.container.flex"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column"
+    },
+    "type": "ia.container.flex"
+  }
+}

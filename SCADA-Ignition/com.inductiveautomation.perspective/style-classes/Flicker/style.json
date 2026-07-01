@@ -1,0 +1,21 @@
+{
+  "base": {
+    "animation": {
+      "duration": "0.5s",
+      "keyframes": {
+        "0%": {
+          "borderColor": "#000000",
+          "borderStyle": "solid",
+          "borderWidth": "4px",
+          "opacity": "1"
+        },
+        "100%": {
+          "borderColor": "#00FFFF",
+          "borderStyle": "solid",
+          "borderWidth": "4px",
+          "opacity": "1"
+        }
+      }
+    }
+  }
+}

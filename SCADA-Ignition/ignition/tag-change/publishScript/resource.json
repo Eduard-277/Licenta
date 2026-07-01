@@ -1,0 +1,41 @@
+{
+  "scope": "G",
+  "version": 1,
+  "restricted": false,
+  "overridable": true,
+  "files": [
+    "onTagChange.py"
+  ],
+  "attributes": {
+    "changeTypes": [
+      "ValueChange",
+      "QualityChange",
+      "TimestampChange"
+    ],
+    "lastModificationSignature": "f882a89cb2b7aa9f3dfe134c0d93c81bab79b64c82c01f10f7f6924a42f0ba3d",
+    "paths": [
+      "[MQTT Engine]Zenoh_router_tags/SCADA/crane/speed_mode",
+      "[MQTT Engine]Zenoh_router_tags/SCADA/crane/electromagnet",
+      "[MQTT Engine]Zenoh_router_tags/SCADA/crane/allow_remote",
+      "[MQTT Engine]Zenoh_router_tags/SCADA/crane/control/up",
+      "[MQTT Engine]Zenoh_router_tags/SCADA/crane/control/right",
+      "[MQTT Engine]Zenoh_router_tags/SCADA/crane/control/left",
+      "[MQTT Engine]Zenoh_router_tags/SCADA/crane/control/down",
+      "[MQTT Engine]Zenoh_router_tags/SCADA/crane/motor_horizontal/power",
+      "[MQTT Engine]Zenoh_router_tags/SCADA/crane/motor_vertical/power",
+      "[MQTT Engine]Zenoh_router_tags/SCADA/crane/motor_horizontal/velocity",
+      "[MQTT Engine]Zenoh_router_tags/SCADA/crane/motor_vertical/velocity",
+      "[MQTT Engine]Zenoh_router_tags/SCADA/crane/motor_horizontal/specified/distance",
+      "[MQTT Engine]Zenoh_router_tags/SCADA/crane/motor_vertical/specified/distance",
+      "[MQTT Engine]Zenoh_router_tags/SCADA/crane/motor_horizontal/specified/movement",
+      "[MQTT Engine]Zenoh_router_tags/SCADA/crane/motor_vertical/specified/movement",
+      "[MQTT Engine]Zenoh_router_tags/SCADA/crane/motor_horizontal/continuous",
+      "[MQTT Engine]Zenoh_router_tags/SCADA/crane/motor_vertical/continuous"
+    ],
+    "lastModification": {
+      "actor": "admin",
+      "timestamp": "2026-05-19T19:55:42Z"
+    },
+    "enabled": true
+  }
+}

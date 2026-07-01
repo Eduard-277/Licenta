@@ -1,0 +1,1934 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {
+    "defaultSize": {
+      "height": 572,
+      "width": 892
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label_1"
+            },
+            "position": {
+              "basis": "100px"
+            },
+            "props": {
+              "style": {
+                "backgroundColor": "#000000",
+                "color": "#FAFAFB",
+                "fontFamily": "Arial",
+                "fontSize": 40,
+                "fontStyle": "italic",
+                "fontWeight": "bold",
+                "padding": 25
+              },
+              "text": "Car",
+              "textStyle": {
+                "alignSelf": "flex-start"
+              }
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "children": [
+              {
+                "meta": {
+                  "name": "Label"
+                },
+                "position": {
+                  "basis": "150px",
+                  "grow": 1
+                },
+                "props": {
+                  "style": {
+                    "color": "#000000",
+                    "fontFamily": "inherit",
+                    "fontSize": 18,
+                    "fontWeight": "bold",
+                    "textAlign": "center"
+                  },
+                  "text": "Allow remote connection?"
+                },
+                "type": "ia.display.label"
+              },
+              {
+                "children": [
+                  {
+                    "meta": {
+                      "name": "FlexContainer_0"
+                    },
+                    "position": {
+                      "basis": "100px",
+                      "grow": 1
+                    },
+                    "type": "ia.container.flex"
+                  },
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "events": {
+                                  "component": {
+                                    "onActionPerformed": {
+                                      "config": {
+                                        "script": "    import time\n    \n    self.props.enabled \u003d False\n    \n    \n    read_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/crane/allow_remote\"\n    write_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/SCADA/crane/allow_remote\"\n    \n    read_value \u003d system.tag.readBlocking([read_tag_path])[0].value\n    sent_value \u003d system.tag.readBlocking([write_tag_path])[0].value\n    \n    int_read_value \u003d int(read_value)\n    int_sent_value \u003d int(sent_value)\n    \n    def send_delayed_command():\n\n        time.sleep(0.5) \n        \n        final_value \u003d 1\n        \t\n        system.tag.writeAsync([write_tag_path], [final_value])\n        self.props.enabled \u003d True\n\n    if int_sent_value \u003d\u003d 1:\n    \t\n        system.tag.writeAsync([write_tag_path], [read_value])\n        \n        \n    system.util.invokeAsynchronous(send_delayed_command)"
+                                      },
+                                      "scope": "G",
+                                      "type": "script"
+                                    }
+                                  }
+                                },
+                                "meta": {
+                                  "name": "Button"
+                                },
+                                "position": {
+                                  "basis": "212px",
+                                  "grow": 1
+                                },
+                                "props": {
+                                  "enabled": false,
+                                  "style": {
+                                    "backgroundColor": "#00AC00",
+                                    "boxShadow": "5"
+                                  },
+                                  "text": "Yes"
+                                },
+                                "type": "ia.input.button"
+                              }
+                            ],
+                            "meta": {
+                              "name": "FlexContainer_0"
+                            },
+                            "position": {
+                              "basis": "322.7px",
+                              "grow": 1
+                            },
+                            "type": "ia.container.flex"
+                          }
+                        ],
+                        "meta": {
+                          "name": "FlexContainer_0"
+                        },
+                        "position": {
+                          "basis": "100px",
+                          "grow": 1
+                        },
+                        "type": "ia.container.flex"
+                      },
+                      {
+                        "meta": {
+                          "name": "FlexContainer_2"
+                        },
+                        "position": {
+                          "basis": "44px",
+                          "grow": 1
+                        },
+                        "props": {
+                          "direction": "column"
+                        },
+                        "type": "ia.container.flex"
+                      },
+                      {
+                        "children": [
+                          {
+                            "events": {
+                              "component": {
+                                "onActionPerformed": {
+                                  "config": {
+                                    "script": "\n    import time\n    \n    self.props.enabled \u003d False\n    \n    \n    read_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/crane/allow_remote\"\n    write_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/SCADA/crane/allow_remote\"\n    \n    read_value \u003d system.tag.readBlocking([read_tag_path])[0].value\n    sent_value \u003d system.tag.readBlocking([write_tag_path])[0].value\n    \n    int_read_value \u003d int(read_value)\n    int_sent_value \u003d int(sent_value)\n    \n    def send_delayed_command():\n\n        time.sleep(0.5) \n        \n        final_value \u003d 2\n        \t\n        system.tag.writeAsync([write_tag_path], [final_value])\n        self.props.enabled \u003d True\n\n    if int_sent_value \u003d\u003d 2:\n    \t\n        system.tag.writeAsync([write_tag_path], [read_value])\n        \n        \n    system.util.invokeAsynchronous(send_delayed_command)"
+                                  },
+                                  "scope": "G",
+                                  "type": "script"
+                                }
+                              }
+                            },
+                            "meta": {
+                              "name": "Button"
+                            },
+                            "position": {
+                              "basis": "212px",
+                              "grow": 1
+                            },
+                            "props": {
+                              "style": {
+                                "backgroundColor": "#D90000",
+                                "boxShadow": "5"
+                              },
+                              "text": "No"
+                            },
+                            "type": "ia.input.button"
+                          }
+                        ],
+                        "meta": {
+                          "name": "FlexContainer_1"
+                        },
+                        "position": {
+                          "basis": "100px",
+                          "grow": 1
+                        },
+                        "type": "ia.container.flex"
+                      }
+                    ],
+                    "meta": {
+                      "name": "FlexContainer_1"
+                    },
+                    "position": {
+                      "basis": "250px",
+                      "grow": 1
+                    },
+                    "type": "ia.container.flex"
+                  },
+                  {
+                    "meta": {
+                      "name": "FlexContainer_2"
+                    },
+                    "position": {
+                      "basis": "100px",
+                      "grow": 1
+                    },
+                    "type": "ia.container.flex"
+                  }
+                ],
+                "meta": {
+                  "name": "FlexContainer"
+                },
+                "position": {
+                  "basis": "120px",
+                  "grow": 1
+                },
+                "props": {
+                  "direction": "column"
+                },
+                "type": "ia.container.flex"
+              },
+              {
+                "meta": {
+                  "name": "Label_1"
+                },
+                "position": {
+                  "basis": "30px",
+                  "grow": 1
+                },
+                "propConfig": {
+                  "props.text": {
+                    "binding": {
+                      "config": {
+                        "fallbackDelay": 2.5,
+                        "mode": "indirect",
+                        "references": {},
+                        "tagPath": "[MQTT Engine]Zenoh_router_tags/car/conn_req_timeout"
+                      },
+                      "transforms": [
+                        {
+                          "expression": "\"Time left: \" + numberFormat(toFloat(replace(toString({value}), \".\", \",\")), \"#,##0.00\") + \" s\"",
+                          "type": "expression"
+                        }
+                      ],
+                      "type": "tag"
+                    }
+                  }
+                },
+                "props": {
+                  "style": {
+                    "color": "#000000",
+                    "fontFamily": "inherit",
+                    "fontSize": 18,
+                    "fontWeight": "bold",
+                    "textAlign": "center"
+                  }
+                },
+                "type": "ia.display.label"
+              }
+            ],
+            "meta": {
+              "name": "FlexContainer_6"
+            },
+            "position": {
+              "basis": "100px"
+            },
+            "propConfig": {
+              "position.display": {
+                "binding": {
+                  "config": {
+                    "expression": "toFloat({[MQTT Engine]Zenoh_router_tags/car/conn_req_timeout}) !\u003d 0"
+                  },
+                  "type": "expr"
+                }
+              },
+              "props.style.classes": {
+                "binding": {
+                  "config": {
+                    "expression": "if(\r\n    toFloat({[MQTT Engine]Zenoh_router_tags/car/conn_req_timeout}) !\u003d 0,\r\n    \"Flicker\",\r\n    \"\"\r\n)"
+                  },
+                  "type": "expr"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "backgroundColor": "#D5D5D5"
+              }
+            },
+            "type": "ia.container.flex"
+          },
+          {
+            "children": [
+              {
+                "meta": {
+                  "name": "FlexContainer_3"
+                },
+                "position": {
+                  "basis": "100px",
+                  "grow": 1
+                },
+                "props": {
+                  "style": {
+                    "backgroundColor": "#D5D5D5"
+                  }
+                },
+                "type": "ia.container.flex"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "meta": {
+                          "name": "Label"
+                        },
+                        "position": {
+                          "basis": "312px",
+                          "grow": 1
+                        },
+                        "props": {
+                          "style": {
+                            "backgroundColor": "#808080",
+                            "fontFamily": "inherit",
+                            "fontSize": 20,
+                            "fontWeight": "bold",
+                            "overflow": "auto",
+                            "overflowWrap": "normal",
+                            "textAlign": "center",
+                            "textJustify": "auto"
+                          },
+                          "text": "              Controller:",
+                          "textStyle": {
+                            "color": "#FFFFFF"
+                          }
+                        },
+                        "type": "ia.display.label"
+                      },
+                      {
+                        "children": [
+                          {
+                            "meta": {
+                              "name": "FlexContainer"
+                            },
+                            "position": {
+                              "basis": "20px",
+                              "grow": 1
+                            },
+                            "props": {
+                              "direction": "column"
+                            },
+                            "type": "ia.container.flex"
+                          },
+                          {
+                            "children": [
+                              {
+                                "meta": {
+                                  "name": "FlexContainer"
+                                },
+                                "position": {
+                                  "basis": "56px",
+                                  "grow": 1
+                                },
+                                "props": {
+                                  "direction": "column"
+                                },
+                                "type": "ia.container.flex"
+                              },
+                              {
+                                "meta": {
+                                  "name": "Label_2"
+                                },
+                                "position": {
+                                  "basis": "187px",
+                                  "grow": 1
+                                },
+                                "propConfig": {
+                                  "props.style.backgroundColor": {
+                                    "binding": {
+                                      "config": {
+                                        "fallbackDelay": 2.5,
+                                        "mode": "indirect",
+                                        "references": {},
+                                        "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/status"
+                                      },
+                                      "transforms": [
+                                        {
+                                          "fallback": null,
+                                          "inputType": "scalar",
+                                          "mappings": [
+                                            {
+                                              "input": "0",
+                                              "output": "red"
+                                            },
+                                            {
+                                              "input": "1",
+                                              "output": "green"
+                                            }
+                                          ],
+                                          "outputType": "scalar",
+                                          "type": "map"
+                                        }
+                                      ],
+                                      "type": "tag"
+                                    }
+                                  },
+                                  "props.text": {
+                                    "binding": {
+                                      "config": {
+                                        "fallbackDelay": 2.5,
+                                        "mode": "indirect",
+                                        "references": {},
+                                        "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/status"
+                                      },
+                                      "transforms": [
+                                        {
+                                          "fallback": "ERROR",
+                                          "inputType": "scalar",
+                                          "mappings": [
+                                            {
+                                              "input": "0",
+                                              "output": "DISCONNECTED"
+                                            },
+                                            {
+                                              "input": "1",
+                                              "output": "CONNECTED"
+                                            }
+                                          ],
+                                          "outputType": "scalar",
+                                          "type": "map"
+                                        }
+                                      ],
+                                      "type": "tag"
+                                    }
+                                  }
+                                },
+                                "props": {
+                                  "style": {
+                                    "color": "#FFEFEF",
+                                    "fontFamily": "inherit",
+                                    "fontSize": 18,
+                                    "fontWeight": "bold",
+                                    "textAlign": "center"
+                                  }
+                                },
+                                "type": "ia.display.label"
+                              },
+                              {
+                                "meta": {
+                                  "name": "FlexContainer_0"
+                                },
+                                "position": {
+                                  "basis": "44px",
+                                  "grow": 1
+                                },
+                                "props": {
+                                  "direction": "column"
+                                },
+                                "type": "ia.container.flex"
+                              }
+                            ],
+                            "meta": {
+                              "name": "FlexContainer_0"
+                            },
+                            "position": {
+                              "basis": "51px",
+                              "grow": 1
+                            },
+                            "type": "ia.container.flex"
+                          },
+                          {
+                            "meta": {
+                              "name": "FlexContainer_1"
+                            },
+                            "position": {
+                              "basis": "20px",
+                              "grow": 1
+                            },
+                            "props": {
+                              "direction": "column"
+                            },
+                            "type": "ia.container.flex"
+                          }
+                        ],
+                        "meta": {
+                          "name": "FlexContainer"
+                        },
+                        "position": {
+                          "basis": "236px",
+                          "grow": 1
+                        },
+                        "props": {
+                          "direction": "column",
+                          "style": {
+                            "backgroundColor": "#808080"
+                          }
+                        },
+                        "type": "ia.container.flex"
+                      }
+                    ],
+                    "meta": {
+                      "name": "FlexContainer"
+                    },
+                    "position": {
+                      "basis": "200px"
+                    },
+                    "type": "ia.container.flex"
+                  },
+                  {
+                    "children": [
+                      {
+                        "meta": {
+                          "name": "Label"
+                        },
+                        "position": {
+                          "basis": "312px",
+                          "grow": 1
+                        },
+                        "props": {
+                          "style": {
+                            "backgroundColor": "#808080",
+                            "fontFamily": "inherit",
+                            "fontSize": 20,
+                            "fontWeight": "bold",
+                            "overflow": "auto",
+                            "overflowWrap": "normal",
+                            "textAlign": "center",
+                            "textJustify": "auto"
+                          },
+                          "text": "Movement Status:",
+                          "textStyle": {
+                            "color": "#FFFFFF"
+                          }
+                        },
+                        "type": "ia.display.label"
+                      },
+                      {
+                        "children": [
+                          {
+                            "meta": {
+                              "name": "FlexContainer"
+                            },
+                            "position": {
+                              "basis": "20px",
+                              "grow": 1
+                            },
+                            "props": {
+                              "direction": "column"
+                            },
+                            "type": "ia.container.flex"
+                          },
+                          {
+                            "children": [
+                              {
+                                "meta": {
+                                  "name": "FlexContainer"
+                                },
+                                "position": {
+                                  "basis": "56px",
+                                  "grow": 1
+                                },
+                                "props": {
+                                  "direction": "column"
+                                },
+                                "type": "ia.container.flex"
+                              },
+                              {
+                                "meta": {
+                                  "name": "Label_2"
+                                },
+                                "position": {
+                                  "basis": "187px",
+                                  "grow": 1
+                                },
+                                "propConfig": {
+                                  "props.style.backgroundColor": {
+                                    "binding": {
+                                      "config": {
+                                        "fallbackDelay": 2.5,
+                                        "mode": "indirect",
+                                        "references": {},
+                                        "tagPath": "[MQTT Engine]Zenoh_router_tags/car/movement"
+                                      },
+                                      "transforms": [
+                                        {
+                                          "fallback": null,
+                                          "inputType": "scalar",
+                                          "mappings": [
+                                            {
+                                              "input": "0",
+                                              "output": "green"
+                                            },
+                                            {
+                                              "input": "1",
+                                              "output": "blue"
+                                            },
+                                            {
+                                              "input": "2",
+                                              "output": "purple"
+                                            },
+                                            {
+                                              "input": "3",
+                                              "output": "orange"
+                                            },
+                                            {
+                                              "input": "4",
+                                              "output": "orange"
+                                            }
+                                          ],
+                                          "outputType": "scalar",
+                                          "type": "map"
+                                        }
+                                      ],
+                                      "type": "tag"
+                                    }
+                                  },
+                                  "props.text": {
+                                    "binding": {
+                                      "config": {
+                                        "fallbackDelay": 2.5,
+                                        "mode": "indirect",
+                                        "references": {},
+                                        "tagPath": "[MQTT Engine]Zenoh_router_tags/car/movement"
+                                      },
+                                      "transforms": [
+                                        {
+                                          "fallback": null,
+                                          "inputType": "scalar",
+                                          "mappings": [
+                                            {
+                                              "input": "0",
+                                              "output": "IDLE"
+                                            },
+                                            {
+                                              "input": "1",
+                                              "output": "FORWARD"
+                                            },
+                                            {
+                                              "input": "2",
+                                              "output": "REVERSE"
+                                            },
+                                            {
+                                              "input": "3",
+                                              "output": "LEFT"
+                                            },
+                                            {
+                                              "input": "4",
+                                              "output": "RIGHT"
+                                            }
+                                          ],
+                                          "outputType": "scalar",
+                                          "type": "map"
+                                        }
+                                      ],
+                                      "type": "tag"
+                                    }
+                                  }
+                                },
+                                "props": {
+                                  "style": {
+                                    "color": "#FFEFEF",
+                                    "fontFamily": "inherit",
+                                    "fontSize": 18,
+                                    "fontWeight": "bold",
+                                    "textAlign": "center"
+                                  }
+                                },
+                                "type": "ia.display.label"
+                              },
+                              {
+                                "meta": {
+                                  "name": "FlexContainer_0"
+                                },
+                                "position": {
+                                  "basis": "44px",
+                                  "grow": 1
+                                },
+                                "props": {
+                                  "direction": "column"
+                                },
+                                "type": "ia.container.flex"
+                              }
+                            ],
+                            "meta": {
+                              "name": "FlexContainer_0"
+                            },
+                            "position": {
+                              "basis": "51px",
+                              "grow": 1
+                            },
+                            "type": "ia.container.flex"
+                          },
+                          {
+                            "meta": {
+                              "name": "FlexContainer_1"
+                            },
+                            "position": {
+                              "basis": "20px",
+                              "grow": 1
+                            },
+                            "props": {
+                              "direction": "column"
+                            },
+                            "type": "ia.container.flex"
+                          }
+                        ],
+                        "meta": {
+                          "name": "FlexContainer"
+                        },
+                        "position": {
+                          "basis": "236px",
+                          "grow": 1
+                        },
+                        "props": {
+                          "direction": "column",
+                          "style": {
+                            "backgroundColor": "#808080"
+                          }
+                        },
+                        "type": "ia.container.flex"
+                      }
+                    ],
+                    "meta": {
+                      "name": "FlexContainer_0"
+                    },
+                    "position": {
+                      "basis": "200px"
+                    },
+                    "type": "ia.container.flex"
+                  }
+                ],
+                "meta": {
+                  "name": "FlexContainer"
+                },
+                "position": {
+                  "basis": "180px",
+                  "grow": 1
+                },
+                "props": {
+                  "direction": "column",
+                  "style": {
+                    "borderBottomStyle": "solid",
+                    "borderLeftStyle": "none",
+                    "borderRightStyle": "none",
+                    "borderTopStyle": "solid"
+                  }
+                },
+                "type": "ia.container.flex"
+              },
+              {
+                "meta": {
+                  "name": "FlexContainer_2"
+                },
+                "position": {
+                  "basis": "100px",
+                  "grow": 1
+                },
+                "props": {
+                  "style": {
+                    "backgroundColor": "#D5D5D5"
+                  }
+                },
+                "type": "ia.container.flex"
+              },
+              {
+                "children": [
+                  {
+                    "meta": {
+                      "name": "Label"
+                    },
+                    "position": {
+                      "basis": "312px",
+                      "grow": 1
+                    },
+                    "props": {
+                      "style": {
+                        "backgroundColor": "#808080",
+                        "fontFamily": "inherit",
+                        "fontSize": 20,
+                        "fontWeight": "bold",
+                        "overflow": "auto",
+                        "overflowWrap": "normal",
+                        "textAlign": "center",
+                        "textJustify": "auto"
+                      },
+                      "text": "Connection to Crane Status:",
+                      "textStyle": {
+                        "color": "#FFFFFF"
+                      }
+                    },
+                    "type": "ia.display.label"
+                  },
+                  {
+                    "children": [
+                      {
+                        "meta": {
+                          "name": "FlexContainer"
+                        },
+                        "position": {
+                          "basis": "40px",
+                          "grow": 1
+                        },
+                        "props": {
+                          "direction": "column"
+                        },
+                        "type": "ia.container.flex"
+                      },
+                      {
+                        "children": [
+                          {
+                            "meta": {
+                              "name": "FlexContainer"
+                            },
+                            "position": {
+                              "basis": "56px",
+                              "grow": 1
+                            },
+                            "props": {
+                              "direction": "column"
+                            },
+                            "type": "ia.container.flex"
+                          },
+                          {
+                            "meta": {
+                              "name": "Label_2"
+                            },
+                            "position": {
+                              "basis": "187px",
+                              "grow": 1
+                            },
+                            "propConfig": {
+                              "props.style.backgroundColor": {
+                                "binding": {
+                                  "config": {
+                                    "expression": "if(\r\n    {[MQTT Engine]Zenoh_router_tags/car/controller/remote_req} \u003d \"1\" \u0026\u0026 \r\n    {[MQTT Engine]Zenoh_router_tags/crane/allow_remote} \u003d \"1\", \r\n    \"green\", \r\n    \"red\"\r\n)"
+                                  },
+                                  "type": "expr"
+                                }
+                              },
+                              "props.text": {
+                                "binding": {
+                                  "config": {
+                                    "expression": "if(\r\n    {[MQTT Engine]Zenoh_router_tags/car/controller/remote_req} \u003d \"1\" \u0026\u0026 \r\n    {[MQTT Engine]Zenoh_router_tags/crane/allow_remote} \u003d \"1\", \r\n    \"CONNECTED\", \r\n    \"DISCONNECTED\"\r\n)"
+                                  },
+                                  "type": "expr"
+                                }
+                              }
+                            },
+                            "props": {
+                              "style": {
+                                "color": "#FFEFEF",
+                                "fontFamily": "inherit",
+                                "fontSize": 18,
+                                "fontWeight": "bold",
+                                "textAlign": "center"
+                              }
+                            },
+                            "type": "ia.display.label"
+                          },
+                          {
+                            "meta": {
+                              "name": "FlexContainer_0"
+                            },
+                            "position": {
+                              "basis": "44px",
+                              "grow": 1
+                            },
+                            "props": {
+                              "direction": "column"
+                            },
+                            "type": "ia.container.flex"
+                          }
+                        ],
+                        "meta": {
+                          "name": "FlexContainer_0"
+                        },
+                        "position": {
+                          "basis": "51px",
+                          "grow": 1
+                        },
+                        "type": "ia.container.flex"
+                      },
+                      {
+                        "meta": {
+                          "name": "FlexContainer_1"
+                        },
+                        "position": {
+                          "basis": "35px",
+                          "grow": 1
+                        },
+                        "props": {
+                          "direction": "column"
+                        },
+                        "type": "ia.container.flex"
+                      }
+                    ],
+                    "meta": {
+                      "name": "FlexContainer"
+                    },
+                    "position": {
+                      "basis": "236px",
+                      "grow": 1
+                    },
+                    "props": {
+                      "direction": "column",
+                      "style": {
+                        "backgroundColor": "#808080"
+                      }
+                    },
+                    "type": "ia.container.flex"
+                  }
+                ],
+                "meta": {
+                  "name": "FlexContainer_0"
+                },
+                "position": {
+                  "basis": "180px",
+                  "grow": 1
+                },
+                "props": {
+                  "style": {
+                    "borderBottomStyle": "solid",
+                    "borderLeftStyle": "none",
+                    "borderRightStyle": "none",
+                    "borderTopStyle": "solid"
+                  }
+                },
+                "type": "ia.container.flex"
+              }
+            ],
+            "meta": {
+              "name": "FlexContainer"
+            },
+            "position": {
+              "basis": "206px",
+              "grow": 1
+            },
+            "props": {
+              "direction": "column"
+            },
+            "type": "ia.container.flex"
+          },
+          {
+            "meta": {
+              "name": "FlexContainer_2"
+            },
+            "position": {
+              "basis": "43px",
+              "grow": 1
+            },
+            "props": {
+              "style": {
+                "backgroundColor": "#D5D5D5"
+              }
+            },
+            "type": "ia.container.flex"
+          },
+          {
+            "children": [
+              {
+                "meta": {
+                  "name": "Label"
+                },
+                "position": {
+                  "basis": "44px",
+                  "grow": 1
+                },
+                "props": {
+                  "style": {
+                    "backgroundColor": "#808080",
+                    "borderBottomStyle": "solid",
+                    "borderLeftStyle": "none",
+                    "borderRightStyle": "none",
+                    "borderTopStyle": "none",
+                    "fontFamily": "inherit",
+                    "fontSize": 20,
+                    "fontWeight": "bold",
+                    "overflow": "auto",
+                    "overflowWrap": "normal",
+                    "textAlign": "center",
+                    "textJustify": "auto"
+                  },
+                  "text": "Commands sent",
+                  "textStyle": {
+                    "color": "#FFFFFF"
+                  }
+                },
+                "type": "ia.display.label"
+              },
+              {
+                "children": [
+                  {
+                    "meta": {
+                      "name": "Label"
+                    },
+                    "position": {
+                      "basis": "170px",
+                      "grow": 1
+                    },
+                    "props": {
+                      "style": {
+                        "color": "#000000",
+                        "fontFamily": "inherit",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                        "textAlign": "center"
+                      },
+                      "text": "Up request:"
+                    },
+                    "type": "ia.display.label"
+                  },
+                  {
+                    "meta": {
+                      "name": "Label_1"
+                    },
+                    "position": {
+                      "basis": "141px",
+                      "grow": 1
+                    },
+                    "propConfig": {
+                      "props.style.backgroundColor": {
+                        "binding": {
+                          "config": {
+                            "fallbackDelay": 2.5,
+                            "mode": "direct",
+                            "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/dpad/up_req"
+                          },
+                          "transforms": [
+                            {
+                              "fallback": null,
+                              "inputType": "scalar",
+                              "mappings": [
+                                {
+                                  "input": "0",
+                                  "output": "red"
+                                },
+                                {
+                                  "input": "1",
+                                  "output": "green"
+                                }
+                              ],
+                              "outputType": "scalar",
+                              "type": "map"
+                            }
+                          ],
+                          "type": "tag"
+                        }
+                      },
+                      "props.text": {
+                        "binding": {
+                          "config": {
+                            "fallbackDelay": 2.5,
+                            "mode": "indirect",
+                            "references": {},
+                            "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/dpad/up_req"
+                          },
+                          "transforms": [
+                            {
+                              "fallback": null,
+                              "inputType": "scalar",
+                              "mappings": [
+                                {
+                                  "input": "0",
+                                  "output": "False"
+                                },
+                                {
+                                  "input": "1",
+                                  "output": "True"
+                                }
+                              ],
+                              "outputType": "scalar",
+                              "type": "map"
+                            }
+                          ],
+                          "type": "tag"
+                        }
+                      }
+                    },
+                    "props": {
+                      "style": {
+                        "color": "#FFFFFF",
+                        "fontFamily": "inherit",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                        "textAlign": "center"
+                      }
+                    },
+                    "type": "ia.display.label"
+                  },
+                  {
+                    "meta": {
+                      "name": "Label_0"
+                    },
+                    "position": {
+                      "basis": "170px",
+                      "grow": 1
+                    },
+                    "props": {
+                      "style": {
+                        "color": "#000000",
+                        "fontFamily": "inherit",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                        "textAlign": "center"
+                      },
+                      "text": "Left request:"
+                    },
+                    "type": "ia.display.label"
+                  },
+                  {
+                    "meta": {
+                      "name": "Label_3"
+                    },
+                    "position": {
+                      "basis": "141px",
+                      "grow": 1
+                    },
+                    "propConfig": {
+                      "props.style.backgroundColor": {
+                        "binding": {
+                          "config": {
+                            "fallbackDelay": 2.5,
+                            "mode": "direct",
+                            "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/dpad/left_req"
+                          },
+                          "transforms": [
+                            {
+                              "fallback": null,
+                              "inputType": "scalar",
+                              "mappings": [
+                                {
+                                  "input": "0",
+                                  "output": "red"
+                                },
+                                {
+                                  "input": "1",
+                                  "output": "green"
+                                }
+                              ],
+                              "outputType": "scalar",
+                              "type": "map"
+                            }
+                          ],
+                          "type": "tag"
+                        }
+                      },
+                      "props.text": {
+                        "binding": {
+                          "config": {
+                            "fallbackDelay": 2.5,
+                            "mode": "indirect",
+                            "references": {},
+                            "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/dpad/left_req"
+                          },
+                          "transforms": [
+                            {
+                              "fallback": null,
+                              "inputType": "scalar",
+                              "mappings": [
+                                {
+                                  "input": "0",
+                                  "output": "False"
+                                },
+                                {
+                                  "input": "1",
+                                  "output": "True"
+                                }
+                              ],
+                              "outputType": "scalar",
+                              "type": "map"
+                            }
+                          ],
+                          "type": "tag"
+                        }
+                      }
+                    },
+                    "props": {
+                      "style": {
+                        "color": "#FFFFFF",
+                        "fontFamily": "inherit",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                        "textAlign": "center"
+                      }
+                    },
+                    "type": "ia.display.label"
+                  }
+                ],
+                "meta": {
+                  "name": "FlexContainer"
+                },
+                "position": {
+                  "basis": "45px",
+                  "grow": 1
+                },
+                "props": {
+                  "style": {
+                    "backgroundColor": "#D5D5D5",
+                    "borderBottomStyle": "solid",
+                    "borderLeftStyle": "none",
+                    "borderRightStyle": "none",
+                    "borderTopStyle": "none"
+                  }
+                },
+                "type": "ia.container.flex"
+              },
+              {
+                "children": [
+                  {
+                    "meta": {
+                      "name": "Label"
+                    },
+                    "position": {
+                      "basis": "170px",
+                      "grow": 1
+                    },
+                    "props": {
+                      "style": {
+                        "color": "#000000",
+                        "fontFamily": "inherit",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                        "textAlign": "center"
+                      },
+                      "text": "Down request:"
+                    },
+                    "type": "ia.display.label"
+                  },
+                  {
+                    "meta": {
+                      "name": "Label_3"
+                    },
+                    "position": {
+                      "basis": "141px",
+                      "grow": 1
+                    },
+                    "propConfig": {
+                      "props.style.backgroundColor": {
+                        "binding": {
+                          "config": {
+                            "fallbackDelay": 2.5,
+                            "mode": "direct",
+                            "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/dpad/down_req"
+                          },
+                          "transforms": [
+                            {
+                              "fallback": null,
+                              "inputType": "scalar",
+                              "mappings": [
+                                {
+                                  "input": "0",
+                                  "output": "red"
+                                },
+                                {
+                                  "input": "1",
+                                  "output": "green"
+                                }
+                              ],
+                              "outputType": "scalar",
+                              "type": "map"
+                            }
+                          ],
+                          "type": "tag"
+                        }
+                      },
+                      "props.text": {
+                        "binding": {
+                          "config": {
+                            "fallbackDelay": 2.5,
+                            "mode": "indirect",
+                            "references": {},
+                            "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/dpad/down_req"
+                          },
+                          "transforms": [
+                            {
+                              "fallback": null,
+                              "inputType": "scalar",
+                              "mappings": [
+                                {
+                                  "input": "0",
+                                  "output": "False"
+                                },
+                                {
+                                  "input": "1",
+                                  "output": "True"
+                                }
+                              ],
+                              "outputType": "scalar",
+                              "type": "map"
+                            }
+                          ],
+                          "type": "tag"
+                        }
+                      }
+                    },
+                    "props": {
+                      "style": {
+                        "color": "#FFFFFF",
+                        "fontFamily": "inherit",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                        "textAlign": "center"
+                      }
+                    },
+                    "type": "ia.display.label"
+                  },
+                  {
+                    "meta": {
+                      "name": "Label_0"
+                    },
+                    "position": {
+                      "basis": "170px",
+                      "grow": 1
+                    },
+                    "props": {
+                      "style": {
+                        "color": "#000000",
+                        "fontFamily": "inherit",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                        "textAlign": "center"
+                      },
+                      "text": "Right request:"
+                    },
+                    "type": "ia.display.label"
+                  },
+                  {
+                    "meta": {
+                      "name": "Label_4"
+                    },
+                    "position": {
+                      "basis": "141px",
+                      "grow": 1
+                    },
+                    "propConfig": {
+                      "props.style.backgroundColor": {
+                        "binding": {
+                          "config": {
+                            "fallbackDelay": 2.5,
+                            "mode": "direct",
+                            "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/dpad/right_req"
+                          },
+                          "transforms": [
+                            {
+                              "fallback": null,
+                              "inputType": "scalar",
+                              "mappings": [
+                                {
+                                  "input": "0",
+                                  "output": "red"
+                                },
+                                {
+                                  "input": "1",
+                                  "output": "green"
+                                }
+                              ],
+                              "outputType": "scalar",
+                              "type": "map"
+                            }
+                          ],
+                          "type": "tag"
+                        }
+                      },
+                      "props.text": {
+                        "binding": {
+                          "config": {
+                            "fallbackDelay": 2.5,
+                            "mode": "indirect",
+                            "references": {},
+                            "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/dpad/right_req"
+                          },
+                          "transforms": [
+                            {
+                              "fallback": null,
+                              "inputType": "scalar",
+                              "mappings": [
+                                {
+                                  "input": "0",
+                                  "output": "False"
+                                },
+                                {
+                                  "input": "1",
+                                  "output": "True"
+                                }
+                              ],
+                              "outputType": "scalar",
+                              "type": "map"
+                            }
+                          ],
+                          "type": "tag"
+                        }
+                      }
+                    },
+                    "props": {
+                      "style": {
+                        "color": "#FFFFFF",
+                        "fontFamily": "inherit",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                        "textAlign": "center"
+                      }
+                    },
+                    "type": "ia.display.label"
+                  }
+                ],
+                "meta": {
+                  "name": "FlexContainer_0"
+                },
+                "position": {
+                  "basis": "45px",
+                  "grow": 1
+                },
+                "props": {
+                  "style": {
+                    "backgroundColor": "#AAAAAAAB",
+                    "borderBottomStyle": "solid",
+                    "borderLeftStyle": "none",
+                    "borderRightStyle": "none",
+                    "borderTopStyle": "none"
+                  }
+                },
+                "type": "ia.container.flex"
+              },
+              {
+                "children": [
+                  {
+                    "meta": {
+                      "name": "Label"
+                    },
+                    "position": {
+                      "basis": "170px",
+                      "grow": 1
+                    },
+                    "props": {
+                      "style": {
+                        "color": "#000000",
+                        "fontFamily": "inherit",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                        "textAlign": "center"
+                      },
+                      "text": "Electromagnet request:"
+                    },
+                    "type": "ia.display.label"
+                  },
+                  {
+                    "meta": {
+                      "name": "Label_4"
+                    },
+                    "position": {
+                      "basis": "141px",
+                      "grow": 1
+                    },
+                    "propConfig": {
+                      "props.style.backgroundColor": {
+                        "binding": {
+                          "config": {
+                            "fallbackDelay": 2.5,
+                            "mode": "direct",
+                            "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/electromagnet_req"
+                          },
+                          "transforms": [
+                            {
+                              "fallback": null,
+                              "inputType": "scalar",
+                              "mappings": [
+                                {
+                                  "input": "0",
+                                  "output": "red"
+                                },
+                                {
+                                  "input": "1",
+                                  "output": "green"
+                                }
+                              ],
+                              "outputType": "scalar",
+                              "type": "map"
+                            }
+                          ],
+                          "type": "tag"
+                        }
+                      },
+                      "props.text": {
+                        "binding": {
+                          "config": {
+                            "fallbackDelay": 2.5,
+                            "mode": "indirect",
+                            "references": {},
+                            "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/electromagnet_req"
+                          },
+                          "transforms": [
+                            {
+                              "fallback": null,
+                              "inputType": "scalar",
+                              "mappings": [
+                                {
+                                  "input": "0",
+                                  "output": "False"
+                                },
+                                {
+                                  "input": "1",
+                                  "output": "True"
+                                }
+                              ],
+                              "outputType": "scalar",
+                              "type": "map"
+                            }
+                          ],
+                          "type": "tag"
+                        }
+                      }
+                    },
+                    "props": {
+                      "style": {
+                        "color": "#FFFFFF",
+                        "fontFamily": "inherit",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                        "textAlign": "center"
+                      }
+                    },
+                    "type": "ia.display.label"
+                  },
+                  {
+                    "meta": {
+                      "name": "Label_0"
+                    },
+                    "position": {
+                      "basis": "170px",
+                      "grow": 1
+                    },
+                    "props": {
+                      "style": {
+                        "color": "#000000",
+                        "fontFamily": "inherit",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                        "textAlign": "center"
+                      },
+                      "text": "Speed request:"
+                    },
+                    "type": "ia.display.label"
+                  },
+                  {
+                    "meta": {
+                      "name": "Label_2"
+                    },
+                    "position": {
+                      "basis": "141px",
+                      "grow": 1
+                    },
+                    "propConfig": {
+                      "props.style.backgroundColor": {
+                        "binding": {
+                          "config": {
+                            "fallbackDelay": 2.5,
+                            "mode": "direct",
+                            "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/speed_req"
+                          },
+                          "transforms": [
+                            {
+                              "fallback": null,
+                              "inputType": "scalar",
+                              "mappings": [
+                                {
+                                  "input": "1",
+                                  "output": "blue"
+                                },
+                                {
+                                  "input": "2",
+                                  "output": "green"
+                                },
+                                {
+                                  "input": "4",
+                                  "output": "purple"
+                                }
+                              ],
+                              "outputType": "scalar",
+                              "type": "map"
+                            }
+                          ],
+                          "type": "tag"
+                        }
+                      },
+                      "props.text": {
+                        "binding": {
+                          "config": {
+                            "fallbackDelay": 2.5,
+                            "mode": "indirect",
+                            "references": {},
+                            "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/speed_req"
+                          },
+                          "transforms": [
+                            {
+                              "fallback": null,
+                              "inputType": "scalar",
+                              "mappings": [
+                                {
+                                  "input": "1",
+                                  "output": "Slow"
+                                },
+                                {
+                                  "input": "2",
+                                  "output": "Variable"
+                                },
+                                {
+                                  "input": "4",
+                                  "output": "Fast"
+                                }
+                              ],
+                              "outputType": "scalar",
+                              "type": "map"
+                            }
+                          ],
+                          "type": "tag"
+                        }
+                      }
+                    },
+                    "props": {
+                      "style": {
+                        "color": "#FFFFFF",
+                        "fontFamily": "inherit",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                        "textAlign": "center"
+                      }
+                    },
+                    "type": "ia.display.label"
+                  }
+                ],
+                "meta": {
+                  "name": "FlexContainer_1"
+                },
+                "position": {
+                  "basis": "45px",
+                  "grow": 1
+                },
+                "props": {
+                  "style": {
+                    "backgroundColor": "#D5D5D5",
+                    "borderBottomStyle": "solid",
+                    "borderLeftStyle": "none",
+                    "borderRightStyle": "none",
+                    "borderTopStyle": "none"
+                  }
+                },
+                "type": "ia.container.flex"
+              },
+              {
+                "children": [
+                  {
+                    "meta": {
+                      "name": "Label"
+                    },
+                    "position": {
+                      "basis": "170px",
+                      "grow": 1
+                    },
+                    "props": {
+                      "style": {
+                        "color": "#000000",
+                        "fontFamily": "inherit",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                        "textAlign": "center"
+                      },
+                      "text": "Load request:"
+                    },
+                    "type": "ia.display.label"
+                  },
+                  {
+                    "meta": {
+                      "name": "Label_3"
+                    },
+                    "position": {
+                      "basis": "141px",
+                      "grow": 1
+                    },
+                    "propConfig": {
+                      "props.style.backgroundColor": {
+                        "binding": {
+                          "config": {
+                            "fallbackDelay": 2.5,
+                            "mode": "direct",
+                            "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/load_req"
+                          },
+                          "transforms": [
+                            {
+                              "fallback": null,
+                              "inputType": "scalar",
+                              "mappings": [
+                                {
+                                  "input": "0",
+                                  "output": "red"
+                                },
+                                {
+                                  "input": "1",
+                                  "output": "green"
+                                }
+                              ],
+                              "outputType": "scalar",
+                              "type": "map"
+                            }
+                          ],
+                          "type": "tag"
+                        }
+                      },
+                      "props.text": {
+                        "binding": {
+                          "config": {
+                            "fallbackDelay": 2.5,
+                            "mode": "indirect",
+                            "references": {},
+                            "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/load_req"
+                          },
+                          "transforms": [
+                            {
+                              "fallback": null,
+                              "inputType": "scalar",
+                              "mappings": [
+                                {
+                                  "input": "0",
+                                  "output": "False"
+                                },
+                                {
+                                  "input": "1",
+                                  "output": "True"
+                                }
+                              ],
+                              "outputType": "scalar",
+                              "type": "map"
+                            }
+                          ],
+                          "type": "tag"
+                        }
+                      }
+                    },
+                    "props": {
+                      "style": {
+                        "color": "#FFFFFF",
+                        "fontFamily": "inherit",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                        "textAlign": "center"
+                      }
+                    },
+                    "type": "ia.display.label"
+                  },
+                  {
+                    "meta": {
+                      "name": "Label_0"
+                    },
+                    "position": {
+                      "basis": "170px",
+                      "grow": 1
+                    },
+                    "props": {
+                      "style": {
+                        "color": "#000000",
+                        "fontFamily": "inherit",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                        "textAlign": "center"
+                      },
+                      "text": "Unload request:"
+                    },
+                    "type": "ia.display.label"
+                  },
+                  {
+                    "meta": {
+                      "name": "Label_4"
+                    },
+                    "position": {
+                      "basis": "141px",
+                      "grow": 1
+                    },
+                    "propConfig": {
+                      "props.style.backgroundColor": {
+                        "binding": {
+                          "config": {
+                            "fallbackDelay": 2.5,
+                            "mode": "direct",
+                            "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/unload_req"
+                          },
+                          "transforms": [
+                            {
+                              "fallback": null,
+                              "inputType": "scalar",
+                              "mappings": [
+                                {
+                                  "input": "0",
+                                  "output": "red"
+                                },
+                                {
+                                  "input": "1",
+                                  "output": "green"
+                                }
+                              ],
+                              "outputType": "scalar",
+                              "type": "map"
+                            }
+                          ],
+                          "type": "tag"
+                        }
+                      },
+                      "props.text": {
+                        "binding": {
+                          "config": {
+                            "fallbackDelay": 2.5,
+                            "mode": "indirect",
+                            "references": {},
+                            "tagPath": "[MQTT Engine]Zenoh_router_tags/car/controller/unload_req"
+                          },
+                          "transforms": [
+                            {
+                              "fallback": null,
+                              "inputType": "scalar",
+                              "mappings": [
+                                {
+                                  "input": "0",
+                                  "output": "False"
+                                },
+                                {
+                                  "input": "1",
+                                  "output": "True"
+                                }
+                              ],
+                              "outputType": "scalar",
+                              "type": "map"
+                            }
+                          ],
+                          "type": "tag"
+                        }
+                      }
+                    },
+                    "props": {
+                      "style": {
+                        "color": "#FFFFFF",
+                        "fontFamily": "inherit",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                        "textAlign": "center"
+                      }
+                    },
+                    "type": "ia.display.label"
+                  }
+                ],
+                "meta": {
+                  "name": "FlexContainer_3"
+                },
+                "position": {
+                  "basis": "45px",
+                  "grow": 1
+                },
+                "props": {
+                  "style": {
+                    "backgroundColor": "#AAAAAAAB",
+                    "borderStyle": "none"
+                  }
+                },
+                "type": "ia.container.flex"
+              }
+            ],
+            "meta": {
+              "name": "FlexContainer_0"
+            },
+            "position": {
+              "basis": "227px",
+              "grow": 1
+            },
+            "propConfig": {
+              "position.display": {
+                "binding": {
+                  "config": {
+                    "expression": "{[MQTT Engine]Zenoh_router_tags/car/controller/remote_req} \u003d \"1\" \u0026\u0026 \r\n    {[MQTT Engine]Zenoh_router_tags/crane/allow_remote} \u003d \"1\""
+                  },
+                  "type": "expr"
+                }
+              }
+            },
+            "props": {
+              "direction": "column",
+              "style": {
+                "borderBottomStyle": "solid",
+                "borderLeftStyle": "none",
+                "borderRightStyle": "none",
+                "borderTopStyle": "solid"
+              }
+            },
+            "type": "ia.container.flex"
+          },
+          {
+            "meta": {
+              "name": "FlexContainer_3"
+            },
+            "position": {
+              "basis": "43px",
+              "grow": 1
+            },
+            "propConfig": {
+              "position.display": {
+                "binding": {
+                  "config": {
+                    "expression": "{[MQTT Engine]Zenoh_router_tags/car/controller/remote_req} \u003d \"1\" \u0026\u0026 \r\n    {[MQTT Engine]Zenoh_router_tags/crane/allow_remote} \u003d \"1\""
+                  },
+                  "type": "expr"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "backgroundColor": "#D5D5D5"
+              }
+            },
+            "type": "ia.container.flex"
+          }
+        ],
+        "meta": {
+          "name": "FlexContainer"
+        },
+        "position": {
+          "basis": "523px",
+          "grow": 1
+        },
+        "props": {
+          "direction": "column",
+          "style": {
+            "borderStyle": "solid",
+            "borderWidth": 5
+          }
+        },
+        "type": "ia.container.flex"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column"
+    },
+    "type": "ia.container.flex"
+  }
+}

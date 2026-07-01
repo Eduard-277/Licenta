@@ -1,0 +1,1350 @@
+{
+  "custom": {},
+  "params": {
+    "motorName": "motor_horizontal",
+    "motorNameright_limit": 255
+  },
+  "propConfig": {
+    "params.motorName": {
+      "paramDirection": "inout",
+      "persistent": true
+    }
+  },
+  "props": {
+    "defaultSize": {
+      "height": 438,
+      "width": 948
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "meta": {
+                  "name": "Label"
+                },
+                "position": {
+                  "basis": "350px",
+                  "grow": 1
+                },
+                "propConfig": {
+                  "props.text": {
+                    "binding": {
+                      "config": {
+                        "path": "view.params.motorName"
+                      },
+                      "transforms": [
+                        {
+                          "fallback": null,
+                          "inputType": "scalar",
+                          "mappings": [
+                            {
+                              "input": "motor_horizontal",
+                              "output": "Horizontal"
+                            },
+                            {
+                              "input": "motor_vertical",
+                              "output": "Vertical"
+                            }
+                          ],
+                          "outputType": "scalar",
+                          "type": "map"
+                        }
+                      ],
+                      "type": "property"
+                    }
+                  }
+                },
+                "props": {
+                  "style": {
+                    "backgroundColor": "#555555",
+                    "fontFamily": "inherit",
+                    "fontSize": 28,
+                    "fontWeight": "bold",
+                    "overflow": "auto",
+                    "overflowWrap": "normal",
+                    "textAlign": "center",
+                    "textJustify": "auto"
+                  },
+                  "textStyle": {
+                    "color": "#FFFFFF"
+                  }
+                },
+                "type": "ia.display.label"
+              }
+            ],
+            "meta": {
+              "name": "FlexContainer"
+            },
+            "position": {
+              "basis": "71px",
+              "grow": 1
+            },
+            "props": {
+              "wrap": "wrap"
+            },
+            "type": "ia.container.flex"
+          },
+          {
+            "children": [
+              {
+                "meta": {
+                  "name": "Label"
+                },
+                "position": {
+                  "basis": "111px",
+                  "grow": 1
+                },
+                "props": {
+                  "style": {
+                    "color": "#000000",
+                    "fontFamily": "inherit",
+                    "fontSize": 18,
+                    "fontWeight": "bold",
+                    "textAlign": "center"
+                  },
+                  "text": "Velocity:"
+                },
+                "type": "ia.display.label"
+              },
+              {
+                "meta": {
+                  "name": "Label_1"
+                },
+                "position": {
+                  "basis": "187px",
+                  "grow": 1
+                },
+                "propConfig": {
+                  "props.text": {
+                    "binding": {
+                      "config": {
+                        "fallbackDelay": 2.5,
+                        "mode": "indirect",
+                        "references": {
+                          "nume": "toString({view.params.motorName})"
+                        },
+                        "tagPath": "[MQTT Engine]Zenoh_router_tags/crane/{nume}/velocity"
+                      },
+                      "transforms": [
+                        {
+                          "expression": "numberFormat(toFloat(replace(toString({value}), \".\", \",\")), \"#,##0.00\") + \" pulses/s\"",
+                          "type": "expression"
+                        }
+                      ],
+                      "type": "tag"
+                    }
+                  }
+                },
+                "props": {
+                  "style": {
+                    "color": "#000000",
+                    "fontFamily": "inherit",
+                    "fontSize": 18,
+                    "fontWeight": "bold",
+                    "textAlign": "center"
+                  }
+                },
+                "type": "ia.display.label"
+              },
+              {
+                "meta": {
+                  "name": "Image"
+                },
+                "position": {
+                  "basis": "196px",
+                  "grow": 1
+                },
+                "props": {
+                  "altText": "Nu functioneaza",
+                  "fit": {
+                    "mode": "contain"
+                  },
+                  "source": "/system/images/motor.jpg",
+                  "tint": {
+                    "color": "#D5D5D5",
+                    "enabled": true
+                  }
+                },
+                "type": "ia.display.image"
+              },
+              {
+                "children": [
+                  {
+                    "meta": {
+                      "name": "FlexContainer"
+                    },
+                    "position": {
+                      "basis": "54px",
+                      "grow": 1
+                    },
+                    "props": {
+                      "direction": "column"
+                    },
+                    "type": "ia.container.flex"
+                  },
+                  {
+                    "children": [
+                      {
+                        "meta": {
+                          "name": "FlexContainer"
+                        },
+                        "position": {
+                          "basis": "56px",
+                          "grow": 1
+                        },
+                        "props": {
+                          "direction": "column"
+                        },
+                        "type": "ia.container.flex"
+                      },
+                      {
+                        "events": {
+                          "component": {
+                            "onActionPerformed": {
+                              "config": {
+                                "script": "\n    import time\n    \n    self.props.enabled \u003d False\n    \n    idx \u003d self.view.params.motorName\n    \n    read_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/crane/{}/power\".format(idx)\n    write_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/SCADA/crane/{}/power\".format(idx)\n    \n    read_value \u003d system.tag.readBlocking([read_tag_path])[0].value\n    sent_value \u003d system.tag.readBlocking([write_tag_path])[0].value\n    \n    int_read_value \u003d int(read_value)\n    int_sent_value \u003d int(sent_value)\n    \n    def send_delayed_command():\n\n        time.sleep(0.5) \n        \n        final_value \u003d int(not int_read_value)\n        system.tag.writeAsync([write_tag_path], [final_value])\n        self.props.enabled \u003d True\n\n    if int_sent_value \u003d\u003d (not int_read_value):\n    \t\n        system.tag.writeAsync([write_tag_path], [read_value])\n        \n    system.util.invokeAsynchronous(send_delayed_command)"
+                              },
+                              "scope": "G",
+                              "type": "script"
+                            }
+                          }
+                        },
+                        "meta": {
+                          "name": "Button"
+                        },
+                        "position": {
+                          "basis": "212px",
+                          "grow": 1
+                        },
+                        "propConfig": {
+                          "props.style.backgroundColor": {
+                            "binding": {
+                              "config": {
+                                "fallbackDelay": 2.5,
+                                "mode": "indirect",
+                                "references": {
+                                  "nume": "toString({view.params.motorName})"
+                                },
+                                "tagPath": "[MQTT Engine]Zenoh_router_tags/crane/{nume}/power"
+                              },
+                              "transforms": [
+                                {
+                                  "fallback": "gray",
+                                  "inputType": "scalar",
+                                  "mappings": [
+                                    {
+                                      "input": "0",
+                                      "output": "green"
+                                    },
+                                    {
+                                      "input": "1",
+                                      "output": "red"
+                                    }
+                                  ],
+                                  "outputType": "scalar",
+                                  "type": "map"
+                                }
+                              ],
+                              "type": "tag"
+                            }
+                          },
+                          "props.text": {
+                            "binding": {
+                              "config": {
+                                "fallbackDelay": 2.5,
+                                "mode": "indirect",
+                                "references": {
+                                  "nume": "toString({view.params.motorName})"
+                                },
+                                "tagPath": "[MQTT Engine]Zenoh_router_tags/crane/{nume}/power"
+                              },
+                              "transforms": [
+                                {
+                                  "fallback": "Error",
+                                  "inputType": "scalar",
+                                  "mappings": [
+                                    {
+                                      "input": "0",
+                                      "output": "Enable"
+                                    },
+                                    {
+                                      "input": "1",
+                                      "output": "Disable"
+                                    }
+                                  ],
+                                  "outputType": "scalar",
+                                  "type": "map"
+                                }
+                              ],
+                              "type": "tag"
+                            }
+                          }
+                        },
+                        "props": {
+                          "style": {
+                            "boxShadow": "5"
+                          }
+                        },
+                        "type": "ia.input.button"
+                      },
+                      {
+                        "meta": {
+                          "name": "FlexContainer_0"
+                        },
+                        "position": {
+                          "basis": "44px",
+                          "grow": 1
+                        },
+                        "props": {
+                          "direction": "column"
+                        },
+                        "type": "ia.container.flex"
+                      }
+                    ],
+                    "meta": {
+                      "name": "FlexContainer_0"
+                    },
+                    "position": {
+                      "basis": "51px",
+                      "grow": 1
+                    },
+                    "type": "ia.container.flex"
+                  },
+                  {
+                    "meta": {
+                      "name": "FlexContainer_1"
+                    },
+                    "position": {
+                      "basis": "35px",
+                      "grow": 1
+                    },
+                    "props": {
+                      "direction": "column"
+                    },
+                    "type": "ia.container.flex"
+                  }
+                ],
+                "meta": {
+                  "name": "FlexContainer"
+                },
+                "position": {
+                  "basis": "321px",
+                  "grow": 1
+                },
+                "props": {
+                  "direction": "column"
+                },
+                "type": "ia.container.flex"
+              }
+            ],
+            "meta": {
+              "name": "FlexContainer_0"
+            },
+            "position": {
+              "basis": "159px",
+              "grow": 1
+            },
+            "props": {
+              "style": {
+                "backgroundColor": "#D5D5D5"
+              }
+            },
+            "type": "ia.container.flex"
+          },
+          {
+            "children": [
+              {
+                "meta": {
+                  "name": "FlexContainer_1"
+                },
+                "position": {
+                  "basis": "15px"
+                },
+                "props": {
+                  "direction": "column"
+                },
+                "type": "ia.container.flex"
+              },
+              {
+                "children": [
+                  {
+                    "meta": {
+                      "name": "FlexContainer_3"
+                    },
+                    "position": {
+                      "basis": "18px",
+                      "grow": 1
+                    },
+                    "type": "ia.container.flex"
+                  },
+                  {
+                    "children": [
+                      {
+                        "meta": {
+                          "name": "Label"
+                        },
+                        "position": {
+                          "basis": "111px",
+                          "grow": 1
+                        },
+                        "props": {
+                          "style": {
+                            "color": "#FFFFFF",
+                            "fontFamily": "inherit",
+                            "fontSize": 18,
+                            "fontWeight": "bold",
+                            "textAlign": "center"
+                          },
+                          "text": "Distance:"
+                        },
+                        "type": "ia.display.label"
+                      },
+                      {
+                        "events": {
+                          "component": {
+                            "onActionPerformed": {
+                              "config": {
+                                "script": "\t\t\n\tmotor \u003d self.view.params.motorName\n\twrite_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/SCADA/crane/{}/specified/distance\".format(motor)\n\tread_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/crane/{}/actual_position\".format(motor)\n\t\n\tpos \u003d float(system.tag.readBlocking([read_tag_path])[0].value)\n\t\n\tdist \u003d self.props.value\n\t\n\tfinal_pos \u003d pos + dist\n\t\n\tright_limit \u003d 0 \n\tleft_limit \u003d 0\n    \n\tif motor \u003d\u003d \"motor_horizontal\":\n\t\tright_limit \u003d -50\n\t\tleft_limit \u003d -3900\n\telif motor \u003d\u003d \"motor_vertical\":\n\t\tright_limit \u003d -30\n\t\tleft_limit \u003d -5800\n\t\t\n\t  \n\t\n\tif final_pos \u003e right_limit:\n\t\tfinal_pos \u003d right_limit\n\t\t\n\tif final_pos \u003c left_limit:\n\t\tfinal_pos \u003d left_limit\n\t\t\n\t\t\n\tnew_value \u003d int(final_pos - pos)\n\tself.props.value \u003d new_value\n\t\n\tsystem.tag.writeAsync([write_tag_path], [new_value])"
+                              },
+                              "scope": "G",
+                              "type": "script"
+                            }
+                          }
+                        },
+                        "meta": {
+                          "name": "NumericEntryField"
+                        },
+                        "position": {
+                          "basis": "95px",
+                          "grow": 1
+                        },
+                        "propConfig": {
+                          "props.value": {
+                            "binding": {
+                              "config": {
+                                "fallbackDelay": 2.5,
+                                "mode": "indirect",
+                                "references": {
+                                  "nume": "toString({view.params.motorName})"
+                                },
+                                "tagPath": "[MQTT Engine]Zenoh_router_tags/crane/{nume}/specified/distance"
+                              },
+                              "type": "tag"
+                            }
+                          }
+                        },
+                        "props": {
+                          "mode": "protected"
+                        },
+                        "type": "ia.input.numeric-entry-field"
+                      },
+                      {
+                        "meta": {
+                          "name": "Label_1"
+                        },
+                        "position": {
+                          "basis": "116.7px",
+                          "grow": 1
+                        },
+                        "props": {
+                          "style": {
+                            "color": "#FFFFFF",
+                            "fontFamily": "inherit",
+                            "fontSize": 18,
+                            "fontWeight": "bold",
+                            "textAlign": "center"
+                          },
+                          "text": "pulses"
+                        },
+                        "type": "ia.display.label"
+                      }
+                    ],
+                    "meta": {
+                      "name": "FlexContainer"
+                    },
+                    "position": {
+                      "basis": "55px",
+                      "grow": 1
+                    },
+                    "type": "ia.container.flex"
+                  },
+                  {
+                    "meta": {
+                      "name": "FlexContainer_1"
+                    },
+                    "position": {
+                      "basis": "18px",
+                      "grow": 1
+                    },
+                    "type": "ia.container.flex"
+                  },
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "meta": {
+                              "name": "FlexContainer"
+                            },
+                            "position": {
+                              "basis": "56px",
+                              "grow": 1
+                            },
+                            "props": {
+                              "direction": "column"
+                            },
+                            "type": "ia.container.flex"
+                          },
+                          {
+                            "events": {
+                              "component": {
+                                "onActionPerformed": {
+                                  "config": {
+                                    "script": "\n    import time\n    \n    self.props.enabled \u003d False\n    \n    idx \u003d self.view.params.motorName\n    \n    read_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/crane/{}/specified/movement\".format(idx)\n    write_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/SCADA/crane/{}/specified/movement\".format(idx)\n    \n    read_value \u003d system.tag.readBlocking([read_tag_path])[0].value\n    sent_value \u003d system.tag.readBlocking([write_tag_path])[0].value\n    \n    int_read_value \u003d int(read_value)\n    int_sent_value \u003d int(sent_value)\n    \n    def send_delayed_command():\n\n        time.sleep(0.5) \n        \n        final_value \u003d int(not int_read_value)\n        system.tag.writeAsync([write_tag_path], [final_value])\n        self.props.enabled \u003d True\n\n    if int_sent_value \u003d\u003d (not int_read_value):\n    \t\n        system.tag.writeAsync([write_tag_path], [read_value])\n        \n    system.util.invokeAsynchronous(send_delayed_command)"
+                                  },
+                                  "scope": "G",
+                                  "type": "script"
+                                }
+                              }
+                            },
+                            "meta": {
+                              "name": "Button"
+                            },
+                            "position": {
+                              "basis": "212px",
+                              "grow": 1
+                            },
+                            "propConfig": {
+                              "props.style.backgroundColor": {
+                                "binding": {
+                                  "config": {
+                                    "fallbackDelay": 2.5,
+                                    "mode": "indirect",
+                                    "references": {
+                                      "nume": "toString({view.params.motorName})"
+                                    },
+                                    "tagPath": "[MQTT Engine]Zenoh_router_tags/crane/{nume}/specified/movement"
+                                  },
+                                  "transforms": [
+                                    {
+                                      "fallback": "gray",
+                                      "inputType": "scalar",
+                                      "mappings": [
+                                        {
+                                          "input": "0",
+                                          "output": "green"
+                                        },
+                                        {
+                                          "input": "1",
+                                          "output": "red"
+                                        }
+                                      ],
+                                      "outputType": "scalar",
+                                      "type": "map"
+                                    }
+                                  ],
+                                  "type": "tag"
+                                }
+                              },
+                              "props.text": {
+                                "binding": {
+                                  "config": {
+                                    "fallbackDelay": 2.5,
+                                    "mode": "indirect",
+                                    "references": {
+                                      "nume": "toString({view.params.motorName})"
+                                    },
+                                    "tagPath": "[MQTT Engine]Zenoh_router_tags/crane/{nume}/specified/movement"
+                                  },
+                                  "transforms": [
+                                    {
+                                      "fallback": "Error",
+                                      "inputType": "scalar",
+                                      "mappings": [
+                                        {
+                                          "input": "0",
+                                          "output": "Move specified distance"
+                                        },
+                                        {
+                                          "input": "1",
+                                          "output": "Stop"
+                                        }
+                                      ],
+                                      "outputType": "scalar",
+                                      "type": "map"
+                                    }
+                                  ],
+                                  "type": "tag"
+                                }
+                              }
+                            },
+                            "props": {
+                              "style": {
+                                "boxShadow": "5"
+                              }
+                            },
+                            "type": "ia.input.button"
+                          },
+                          {
+                            "meta": {
+                              "name": "FlexContainer_0"
+                            },
+                            "position": {
+                              "basis": "44px",
+                              "grow": 1
+                            },
+                            "props": {
+                              "direction": "column"
+                            },
+                            "type": "ia.container.flex"
+                          }
+                        ],
+                        "meta": {
+                          "name": "FlexContainer_0"
+                        },
+                        "position": {
+                          "basis": "322.7px",
+                          "grow": 1
+                        },
+                        "type": "ia.container.flex"
+                      }
+                    ],
+                    "meta": {
+                      "name": "FlexContainer_0"
+                    },
+                    "position": {
+                      "basis": "55px",
+                      "grow": 1
+                    },
+                    "type": "ia.container.flex"
+                  },
+                  {
+                    "meta": {
+                      "name": "FlexContainer_2"
+                    },
+                    "position": {
+                      "basis": "18px",
+                      "grow": 1
+                    },
+                    "type": "ia.container.flex"
+                  }
+                ],
+                "meta": {
+                  "name": "FlexContainer"
+                },
+                "position": {
+                  "basis": "329px",
+                  "grow": 1
+                },
+                "props": {
+                  "direction": "column",
+                  "style": {
+                    "backgroundColor": "#AAAAAA",
+                    "borderStyle": "dashed",
+                    "outlineStyle": "none"
+                  }
+                },
+                "type": "ia.container.flex"
+              },
+              {
+                "meta": {
+                  "name": "FlexContainer_3"
+                },
+                "position": {
+                  "basis": "15px"
+                },
+                "props": {
+                  "direction": "column"
+                },
+                "type": "ia.container.flex"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "meta": {
+                          "name": "Label"
+                        },
+                        "position": {
+                          "basis": "613px",
+                          "grow": 1
+                        },
+                        "props": {
+                          "style": {
+                            "color": "#FFFFFF",
+                            "fontFamily": "inherit",
+                            "fontSize": 18,
+                            "fontWeight": "bold",
+                            "textAlign": "center"
+                          },
+                          "text": "Move continuously"
+                        },
+                        "type": "ia.display.label"
+                      }
+                    ],
+                    "meta": {
+                      "name": "FlexContainer"
+                    },
+                    "position": {
+                      "basis": "71px",
+                      "grow": 1
+                    },
+                    "type": "ia.container.flex"
+                  },
+                  {
+                    "meta": {
+                      "name": "FlexContainer_2"
+                    },
+                    "position": {
+                      "basis": "18px",
+                      "grow": 1
+                    },
+                    "type": "ia.container.flex"
+                  },
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "meta": {
+                                  "name": "FlexContainer_0"
+                                },
+                                "position": {
+                                  "basis": "44px",
+                                  "grow": 1
+                                },
+                                "props": {
+                                  "direction": "column"
+                                },
+                                "type": "ia.container.flex"
+                              },
+                              {
+                                "events": {
+                                  "component": {
+                                    "onActionPerformed": {
+                                      "config": {
+                                        "script": "\n    import time\n    \n    self.props.enabled \u003d False\n    \n    idx \u003d self.view.params.motorName\n    \n    read_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/crane/{}/continuous\".format(idx)\n    write_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/SCADA/crane/{}/continuous\".format(idx)\n    \n    read_value \u003d system.tag.readBlocking([read_tag_path])[0].value\n    sent_value \u003d system.tag.readBlocking([write_tag_path])[0].value\n    \n    int_read_value \u003d int(read_value)\n    int_sent_value \u003d int(sent_value)\n    \n    def send_delayed_command():\n\n        time.sleep(0.5) \n        \n        system.tag.writeAsync([write_tag_path], [final_value])\n        self.props.enabled \u003d True\n\n    if int_read_value \u003d\u003d 1:\n    \tfinal_value \u003d 0\n    \tif int_sent_value \u003d\u003d 0:\n        \tsystem.tag.writeAsync([write_tag_path], [read_value])\n        \t\n    else:\n    \tfinal_value \u003d 1\n    \tif int_sent_value \u003d\u003d 1:\n        \tsystem.tag.writeAsync([write_tag_path], [read_value])\n        \t\n        \n    system.util.invokeAsynchronous(send_delayed_command)"
+                                      },
+                                      "scope": "G",
+                                      "type": "script"
+                                    }
+                                  }
+                                },
+                                "meta": {
+                                  "name": "Button"
+                                },
+                                "position": {
+                                  "basis": "212px",
+                                  "grow": 1
+                                },
+                                "propConfig": {
+                                  "props.style.backgroundColor": {
+                                    "binding": {
+                                      "config": {
+                                        "fallbackDelay": 2.5,
+                                        "mode": "indirect",
+                                        "references": {
+                                          "nume": "toString({view.params.motorName})"
+                                        },
+                                        "tagPath": "[MQTT Engine]Zenoh_router_tags/crane/{nume}/continuous"
+                                      },
+                                      "transforms": [
+                                        {
+                                          "fallback": "gray",
+                                          "inputType": "scalar",
+                                          "mappings": [
+                                            {
+                                              "input": "0",
+                                              "output": "green"
+                                            },
+                                            {
+                                              "input": "1",
+                                              "output": "red"
+                                            },
+                                            {
+                                              "input": "2",
+                                              "output": "green"
+                                            }
+                                          ],
+                                          "outputType": "scalar",
+                                          "type": "map"
+                                        }
+                                      ],
+                                      "type": "tag"
+                                    }
+                                  },
+                                  "props.text": {
+                                    "binding": {
+                                      "config": {
+                                        "fallbackDelay": 2.5,
+                                        "mode": "indirect",
+                                        "references": {
+                                          "nume": "toString({view.params.motorName})"
+                                        },
+                                        "tagPath": "[MQTT Engine]Zenoh_router_tags/crane/{nume}/continuous"
+                                      },
+                                      "transforms": [
+                                        {
+                                          "fallback": "Error",
+                                          "inputType": "scalar",
+                                          "mappings": [
+                                            {
+                                              "input": "0",
+                                              "output": "Forward"
+                                            },
+                                            {
+                                              "input": "1",
+                                              "output": "Stop"
+                                            },
+                                            {
+                                              "input": "2",
+                                              "output": "Forward"
+                                            }
+                                          ],
+                                          "outputType": "scalar",
+                                          "type": "map"
+                                        }
+                                      ],
+                                      "type": "tag"
+                                    }
+                                  }
+                                },
+                                "props": {
+                                  "style": {
+                                    "boxShadow": "5"
+                                  }
+                                },
+                                "type": "ia.input.button"
+                              }
+                            ],
+                            "meta": {
+                              "name": "FlexContainer_0"
+                            },
+                            "position": {
+                              "basis": "322.7px",
+                              "grow": 1
+                            },
+                            "type": "ia.container.flex"
+                          }
+                        ],
+                        "meta": {
+                          "name": "FlexContainer_0"
+                        },
+                        "position": {
+                          "basis": "216px",
+                          "grow": 1
+                        },
+                        "type": "ia.container.flex"
+                      },
+                      {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "meta": {
+                                  "name": "FlexContainer_0"
+                                },
+                                "position": {
+                                  "basis": "44px",
+                                  "grow": 1
+                                },
+                                "props": {
+                                  "direction": "column"
+                                },
+                                "type": "ia.container.flex"
+                              },
+                              {
+                                "events": {
+                                  "component": {
+                                    "onActionPerformed": {
+                                      "config": {
+                                        "script": "\n    import time\n    \n    self.props.enabled \u003d False\n    \n    idx \u003d self.view.params.motorName\n    \n    read_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/crane/{}/continuous\".format(idx)\n    write_tag_path \u003d \"[MQTT Engine]Zenoh_router_tags/SCADA/crane/{}/continuous\".format(idx)\n    \n    read_value \u003d system.tag.readBlocking([read_tag_path])[0].value\n    sent_value \u003d system.tag.readBlocking([write_tag_path])[0].value\n    \n    int_read_value \u003d int(read_value)\n    int_sent_value \u003d int(sent_value)\n    \n    def send_delayed_command():\n\n        time.sleep(0.5) \n        \n        system.tag.writeAsync([write_tag_path], [final_value])\n        self.props.enabled \u003d True\n\n    if int_read_value \u003d\u003d 2:\n    \tfinal_value \u003d 0\n    \tif int_sent_value \u003d\u003d 0:\n        \tsystem.tag.writeAsync([write_tag_path], [read_value])\n        \t\n    else:\n    \tfinal_value \u003d 2\n    \tif int_sent_value \u003d\u003d 2:\n        \tsystem.tag.writeAsync([write_tag_path], [read_value])\n\n        \n    system.util.invokeAsynchronous(send_delayed_command)"
+                                      },
+                                      "scope": "G",
+                                      "type": "script"
+                                    }
+                                  }
+                                },
+                                "meta": {
+                                  "name": "Button"
+                                },
+                                "position": {
+                                  "basis": "213px",
+                                  "grow": 1
+                                },
+                                "propConfig": {
+                                  "props.style.backgroundColor": {
+                                    "binding": {
+                                      "config": {
+                                        "fallbackDelay": 2.5,
+                                        "mode": "indirect",
+                                        "references": {
+                                          "nume": "toString({view.params.motorName})"
+                                        },
+                                        "tagPath": "[MQTT Engine]Zenoh_router_tags/crane/{nume}/continuous"
+                                      },
+                                      "transforms": [
+                                        {
+                                          "fallback": "gray",
+                                          "inputType": "scalar",
+                                          "mappings": [
+                                            {
+                                              "input": "0",
+                                              "output": "green"
+                                            },
+                                            {
+                                              "input": "1",
+                                              "output": "green"
+                                            },
+                                            {
+                                              "input": "2",
+                                              "output": "red"
+                                            }
+                                          ],
+                                          "outputType": "scalar",
+                                          "type": "map"
+                                        }
+                                      ],
+                                      "type": "tag"
+                                    }
+                                  },
+                                  "props.text": {
+                                    "binding": {
+                                      "config": {
+                                        "fallbackDelay": 2.5,
+                                        "mode": "indirect",
+                                        "references": {
+                                          "nume": "toString({view.params.motorName})"
+                                        },
+                                        "tagPath": "[MQTT Engine]Zenoh_router_tags/crane/{nume}/continuous"
+                                      },
+                                      "transforms": [
+                                        {
+                                          "fallback": "Error",
+                                          "inputType": "scalar",
+                                          "mappings": [
+                                            {
+                                              "input": "0",
+                                              "output": "Backward"
+                                            },
+                                            {
+                                              "input": "1",
+                                              "output": "Backward"
+                                            },
+                                            {
+                                              "input": "2",
+                                              "output": "Stop"
+                                            }
+                                          ],
+                                          "outputType": "scalar",
+                                          "type": "map"
+                                        }
+                                      ],
+                                      "type": "tag"
+                                    }
+                                  }
+                                },
+                                "props": {
+                                  "image": {
+                                    "width": 30
+                                  },
+                                  "style": {
+                                    "boxShadow": "5"
+                                  }
+                                },
+                                "type": "ia.input.button"
+                              },
+                              {
+                                "meta": {
+                                  "name": "FlexContainer_1"
+                                },
+                                "position": {
+                                  "basis": "44px",
+                                  "grow": 1
+                                },
+                                "props": {
+                                  "direction": "column"
+                                },
+                                "type": "ia.container.flex"
+                              }
+                            ],
+                            "meta": {
+                              "name": "FlexContainer_0"
+                            },
+                            "position": {
+                              "basis": "283.5px",
+                              "grow": 1
+                            },
+                            "type": "ia.container.flex"
+                          }
+                        ],
+                        "meta": {
+                          "name": "FlexContainer_1"
+                        },
+                        "position": {
+                          "basis": "276.4px",
+                          "grow": 1
+                        },
+                        "type": "ia.container.flex"
+                      }
+                    ],
+                    "meta": {
+                      "name": "FlexContainer_0"
+                    },
+                    "position": {
+                      "basis": "64px",
+                      "grow": 1
+                    },
+                    "type": "ia.container.flex"
+                  },
+                  {
+                    "meta": {
+                      "name": "FlexContainer_1"
+                    },
+                    "position": {
+                      "basis": "18px",
+                      "grow": 1
+                    },
+                    "type": "ia.container.flex"
+                  }
+                ],
+                "meta": {
+                  "name": "FlexContainer_0"
+                },
+                "position": {
+                  "basis": "679px",
+                  "grow": 1
+                },
+                "props": {
+                  "direction": "column",
+                  "style": {
+                    "backgroundColor": "#AAAAAA",
+                    "borderStyle": "dashed"
+                  }
+                },
+                "type": "ia.container.flex"
+              },
+              {
+                "meta": {
+                  "name": "FlexContainer_2"
+                },
+                "position": {
+                  "basis": "15px"
+                },
+                "props": {
+                  "direction": "column"
+                },
+                "type": "ia.container.flex"
+              }
+            ],
+            "meta": {
+              "name": "FlexContainer_1"
+            },
+            "position": {
+              "basis": "200px",
+              "grow": 1
+            },
+            "props": {
+              "style": {
+                "backgroundColor": "#D5D5D5"
+              }
+            },
+            "type": "ia.container.flex"
+          },
+          {
+            "meta": {
+              "name": "FlexContainer_2"
+            },
+            "position": {
+              "basis": "20px"
+            },
+            "type": "ia.container.flex"
+          },
+          {
+            "children": [
+              {
+                "meta": {
+                  "name": "Label"
+                },
+                "position": {
+                  "basis": "170px",
+                  "grow": 1
+                },
+                "props": {
+                  "style": {
+                    "color": "#000000",
+                    "fontFamily": "inherit",
+                    "fontSize": 18,
+                    "fontWeight": "bold",
+                    "textAlign": "center"
+                  },
+                  "text": "Actual position:"
+                },
+                "type": "ia.display.label"
+              },
+              {
+                "meta": {
+                  "name": "Label_1"
+                },
+                "position": {
+                  "basis": "141px",
+                  "grow": 1
+                },
+                "propConfig": {
+                  "props.text": {
+                    "binding": {
+                      "config": {
+                        "fallbackDelay": 2.5,
+                        "mode": "indirect",
+                        "references": {
+                          "nume": "toString({view.params.motorName})"
+                        },
+                        "tagPath": "[MQTT Engine]Zenoh_router_tags/crane/{nume}/actual_position"
+                      },
+                      "transforms": [
+                        {
+                          "expression": "numberFormat(toFloat(replace(toString({value}), \".\", \",\")), \"#,##0.00\")",
+                          "type": "expression"
+                        }
+                      ],
+                      "type": "tag"
+                    }
+                  }
+                },
+                "props": {
+                  "style": {
+                    "color": "#000000",
+                    "fontFamily": "inherit",
+                    "fontSize": 18,
+                    "fontWeight": "bold",
+                    "textAlign": "left"
+                  }
+                },
+                "type": "ia.display.label"
+              },
+              {
+                "meta": {
+                  "name": "Label_0"
+                },
+                "position": {
+                  "basis": "253px",
+                  "grow": 1
+                },
+                "props": {
+                  "style": {
+                    "color": "#000000",
+                    "fontFamily": "inherit",
+                    "fontSize": 18,
+                    "fontWeight": "bold",
+                    "textAlign": "right"
+                  },
+                  "text": "Movement limit reached:"
+                },
+                "type": "ia.display.label"
+              },
+              {
+                "children": [
+                  {
+                    "meta": {
+                      "name": "FlexContainer"
+                    },
+                    "position": {
+                      "basis": "40px",
+                      "grow": 1
+                    },
+                    "props": {
+                      "direction": "column"
+                    },
+                    "type": "ia.container.flex"
+                  },
+                  {
+                    "children": [
+                      {
+                        "meta": {
+                          "name": "FlexContainer"
+                        },
+                        "position": {
+                          "basis": "56px",
+                          "grow": 1
+                        },
+                        "props": {
+                          "direction": "column"
+                        },
+                        "type": "ia.container.flex"
+                      },
+                      {
+                        "meta": {
+                          "name": "Label_2"
+                        },
+                        "position": {
+                          "basis": "187px",
+                          "grow": 1
+                        },
+                        "propConfig": {
+                          "props.style.backgroundColor": {
+                            "binding": {
+                              "config": {
+                                "fallbackDelay": 2.5,
+                                "mode": "indirect",
+                                "references": {
+                                  "nume": "toString({view.params.motorName})"
+                                },
+                                "tagPath": "[MQTT Engine]Zenoh_router_tags/crane/{nume}/limits"
+                              },
+                              "transforms": [
+                                {
+                                  "fallback": null,
+                                  "inputType": "scalar",
+                                  "mappings": [
+                                    {
+                                      "input": "0",
+                                      "output": "green"
+                                    },
+                                    {
+                                      "input": "1",
+                                      "output": "red"
+                                    },
+                                    {
+                                      "input": "2",
+                                      "output": "red"
+                                    }
+                                  ],
+                                  "outputType": "scalar",
+                                  "type": "map"
+                                }
+                              ],
+                              "type": "tag"
+                            }
+                          },
+                          "props.text": {
+                            "binding": {
+                              "config": {
+                                "fallbackDelay": 2.5,
+                                "mode": "indirect",
+                                "references": {
+                                  "nume": "toString({view.params.motorName})"
+                                },
+                                "tagPath": "[MQTT Engine]Zenoh_router_tags/crane/{nume}/limits"
+                              },
+                              "transforms": [
+                                {
+                                  "code": "\tmotor \u003d self.view.params.motorName\n\tif value \u003d\u003d \"0\":\n\t\treturn \"NONE\"\n        \n\tif motor \u003d\u003d \"motor_horizontal\":\n\t\tif value \u003d\u003d \"1\":\n\t\t\treturn \"LEFT\"\n\t\telif value \u003d\u003d \"2\":\n\t\t\treturn \"RIGHT\"\n\t\n\telif motor \u003d\u003d \"motor_vertical\":\n\t\tif value \u003d\u003d \"1\":\n\t\t\treturn \"DOWN\"\n\t\telif value \u003d\u003d \"2\":\n\t\t\treturn \"UP\"\n\n\n\treturn \"ERROR\"",
+                                  "type": "script"
+                                }
+                              ],
+                              "type": "tag"
+                            }
+                          }
+                        },
+                        "props": {
+                          "style": {
+                            "color": "#FFEFEF",
+                            "fontFamily": "inherit",
+                            "fontSize": 18,
+                            "fontWeight": "bold",
+                            "textAlign": "center"
+                          }
+                        },
+                        "type": "ia.display.label"
+                      },
+                      {
+                        "meta": {
+                          "name": "FlexContainer_0"
+                        },
+                        "position": {
+                          "basis": "44px",
+                          "grow": 1
+                        },
+                        "props": {
+                          "direction": "column"
+                        },
+                        "type": "ia.container.flex"
+                      }
+                    ],
+                    "meta": {
+                      "name": "FlexContainer_0"
+                    },
+                    "position": {
+                      "basis": "51px",
+                      "grow": 1
+                    },
+                    "type": "ia.container.flex"
+                  },
+                  {
+                    "meta": {
+                      "name": "FlexContainer_1"
+                    },
+                    "position": {
+                      "basis": "35px",
+                      "grow": 1
+                    },
+                    "props": {
+                      "direction": "column"
+                    },
+                    "type": "ia.container.flex"
+                  }
+                ],
+                "meta": {
+                  "name": "FlexContainer"
+                },
+                "position": {
+                  "basis": "236px",
+                  "grow": 1
+                },
+                "props": {
+                  "direction": "column"
+                },
+                "type": "ia.container.flex"
+              }
+            ],
+            "meta": {
+              "name": "FlexContainer_4"
+            },
+            "position": {
+              "basis": "159px",
+              "grow": 1
+            },
+            "props": {
+              "style": {
+                "backgroundColor": "#D5D5D5"
+              }
+            },
+            "type": "ia.container.flex"
+          }
+        ],
+        "meta": {
+          "name": "FlexContainer"
+        },
+        "position": {
+          "basis": "519px",
+          "grow": 1
+        },
+        "props": {
+          "direction": "column",
+          "style": {
+            "borderStyle": "none"
+          }
+        },
+        "type": "ia.container.flex"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column",
+      "style": {
+        "backgroundColor": "#D5D5D5",
+        "borderStyle": "none"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}
