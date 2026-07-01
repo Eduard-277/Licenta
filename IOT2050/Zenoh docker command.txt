@@ -1,0 +1,12 @@
+docker run -d \
+  --name zenoh-router \
+  --restart unless-stopped \
+  --network host \
+  -v /root/zenoh_plugins/lib:/root/.zenoh/lib \
+  eclipse/zenoh:1.9.0 \
+  -l tcp/0.0.0.0:7447 \
+  --cfg='plugins/remote_api/websocket_port:"0.0.0.0:10000"' \
+  --cfg='plugins/storage_manager/volumes/memory:{}' \
+  --cfg='plugins/storage_manager/storages/iot_storage/key_expr:"**"' \
+  --cfg='plugins/storage_manager/storages/iot_storage/volume:"memory"' \
+  --cfg='plugins/mqtt/port:1884'

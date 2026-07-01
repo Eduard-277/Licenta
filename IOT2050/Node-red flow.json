@@ -1,0 +1,381 @@
+[
+    {
+        "id": "e9b2b5b35b83c8d4",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "6b852bc8ee741a59",
+        "type": "modbus-read",
+        "z": "e9b2b5b35b83c8d4",
+        "name": "",
+        "topic": "",
+        "showStatusActivities": false,
+        "logIOActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "unitid": "",
+        "dataType": "HoldingRegister",
+        "adr": "0",
+        "quantity": "58",
+        "rate": "250",
+        "rateUnit": "ms",
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "server": "788a76f2656f9651",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "x": 130,
+        "y": 280,
+        "wires": [
+            [
+                "794aaf02cca28473",
+                "a4f159cbb32fdcf8"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "794aaf02cca28473",
+        "type": "modbus-response",
+        "z": "e9b2b5b35b83c8d4",
+        "name": "",
+        "registerShowMax": "114",
+        "x": 370,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "43e7c41fb5de59a7",
+        "type": "modbus-write",
+        "z": "e9b2b5b35b83c8d4",
+        "name": "",
+        "showStatusActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "unitid": "",
+        "dataType": "MHoldingRegisters",
+        "adr": "0",
+        "quantity": "4",
+        "server": "788a76f2656f9651",
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 340,
+        "y": 100,
+        "wires": [
+            [
+                "ef6349d03d79b241"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "ef6349d03d79b241",
+        "type": "modbus-response",
+        "z": "e9b2b5b35b83c8d4",
+        "name": "",
+        "registerShowMax": 20,
+        "x": 650,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "dce22356bcd96f86",
+        "type": "inject",
+        "z": "e9b2b5b35b83c8d4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "[0,8,0,5]",
+        "payloadType": "json",
+        "x": 180,
+        "y": 100,
+        "wires": [
+            [
+                "43e7c41fb5de59a7"
+            ]
+        ]
+    },
+    {
+        "id": "b605ccf12c9178fc",
+        "type": "debug",
+        "z": "e9b2b5b35b83c8d4",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "a4f159cbb32fdcf8",
+        "type": "function",
+        "z": "e9b2b5b35b83c8d4",
+        "name": "process_modbus_response",
+        "func": "const variableNames = [\n    \"crane/arduino/weight\",\n    \"crane/arduino/calibration\",\n    \"crane/fault\",\n    \"crane/speed_mode\",\n    \"crane/electromagnet\",\n    \"crane/detectors/left\",\n    \"crane/detectors/right\",\n    \"crane/allow_remote\",\n    \"crane/motor_horizontal/power\",\n    \"crane/motor_horizontal/velocity\",\n    \"crane/motor_horizontal/specified/distance\",\n    \"crane/motor_horizontal/specified/movement\",\n    \"crane/motor_horizontal/continuous\",\n    \"crane/motor_horizontal/actual_position\",\n    \"crane/motor_vertical/power\",\n    \"crane/motor_vertical/velocity\",\n    \"crane/motor_vertical/specified/distance\",\n    \"crane/motor_vertical/specified/movement\",\n    \"crane/motor_vertical/continuous\",\n    \"crane/motor_vertical/actual_position\",\n    \"crane/process_status\",\n    \"crane/motor_horizontal/limits\",\n    \"crane/motor_vertical/limits\",\n    \"crane/cargo\",\n    \"crane/control/up\",\n    \"crane/control/down\",\n    \"crane/control/left\",\n    \"crane/control/right\"\n];\n\nlet word1 = 0xFF;\nlet word2 = 0xFF;\nlet value = 0xFF;\n\nif (msg.payload.length >= variableNames.length * 2) \n{\n\n    let buf = Buffer.alloc(4);\n\n    for (let i = 0; i < variableNames.length; i++) \n    {\n        word1 = msg.payload[i * 2];\n        word2 = msg.payload[(i * 2) + 1];\n\n        buf.writeUInt16BE(word1, 0);\n        buf.writeUInt16BE(word2, 2);\n\n        switch (i)\n        {\n            case 0:\n            case 9:\n            case 10:\n            case 13:\n            case 15:\n            case 16:\n            case 19:\n                value = buf.readFloatBE(0);\n            break;\n\n            default:\n                value = buf.readInt32BE(0);\n            break;\n        }\n\n        flow.set(variableNames[i], value);\n    }\n\n    \n    return msg;\n\n} \nelse \n{\n    node.error(`Not enough Modbus data. Expected ${variableNames.length * 2} words.`, msg);\n    return null;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 280,
+        "wires": [
+            [
+                "389f39bf259583a1"
+            ]
+        ]
+    },
+    {
+        "id": "389f39bf259583a1",
+        "type": "function",
+        "z": "e9b2b5b35b83c8d4",
+        "name": "check_update",
+        "func": "const publishMap = [\n    \"crane/arduino/weight\",\n    \"crane/arduino/calibration\",\n    \"crane/fault\",\n    \"crane/speed_mode\",\n    \"crane/electromagnet\",\n    \"crane/detectors/left\",\n    \"crane/detectors/right\",\n    \"crane/allow_remote\",\n    \"crane/motor_horizontal/power\",\n    \"crane/motor_horizontal/velocity\",\n    \"crane/motor_horizontal/specified/distance\",\n    \"crane/motor_horizontal/specified/movement\",\n    \"crane/motor_horizontal/continuous\",\n    \"crane/motor_horizontal/actual_position\",\n    \"crane/motor_vertical/power\",\n    \"crane/motor_vertical/velocity\",\n    \"crane/motor_vertical/specified/distance\",\n    \"crane/motor_vertical/specified/movement\",\n    \"crane/motor_vertical/continuous\",\n    \"crane/motor_vertical/actual_position\",\n    \"crane/process_status\",\n    \"crane/motor_horizontal/limits\",\n    \"crane/motor_vertical/limits\",\n    \"crane/cargo\",\n    \"crane/control/up\",\n    \"crane/control/down\",\n    \"crane/control/left\",\n    \"crane/control/right\"\n];\n\nlet previousValues = flow.get('prevValues') || {};\nlet lastSentTimes = flow.get('lastSentTimes') || {};\nlet messagesToSend = [];\nconst now = Date.now();\nconst FORCE_SEND_INTERVAL = 60000;\n\nfor (let item of publishMap) {\n    let currentValue = flow.get(item);\n    let lastTime = lastSentTimes[item] || 0;\n\n    if (previousValues[item] !== currentValue || (now - lastTime) >= FORCE_SEND_INTERVAL) {\n\n        previousValues[item] = currentValue;\n        lastSentTimes[item] = now; // Update the timestamp for this topic\n\n        messagesToSend.push({\n            topic: item,\n            payload: currentValue\n        });\n    }\n}\n\nflow.set('prevValues', previousValues);\nflow.set('lastSentTimes', lastSentTimes);\n\nif (messagesToSend.length > 0) {\n    return [messagesToSend];\n} else {\n    return null;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 280,
+        "wires": [
+            [
+                "b605ccf12c9178fc",
+                "ca23cd8be2a50ed0"
+            ]
+        ]
+    },
+    {
+        "id": "e2053a2b562ff1aa",
+        "type": "zenoh-subscribe",
+        "z": "e9b2b5b35b83c8d4",
+        "name": "",
+        "session": "25a3b8f6216830a5",
+        "keyExpr": "**",
+        "allowedOrigin": "",
+        "x": 130,
+        "y": 480,
+        "wires": [
+            [
+                "9245f4025e770f47",
+                "f05dfabbbdba27cf"
+            ]
+        ]
+    },
+    {
+        "id": "1b9d894c1f349ba4",
+        "type": "debug",
+        "z": "e9b2b5b35b83c8d4",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "460d3c76716cb9c8",
+        "type": "debug",
+        "z": "e9b2b5b35b83c8d4",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "ca23cd8be2a50ed0",
+        "type": "zenoh-put",
+        "z": "e9b2b5b35b83c8d4",
+        "name": "",
+        "session": "25a3b8f6216830a5",
+        "keyExpr": "",
+        "forceKeyExpr": false,
+        "encoding": "",
+        "priority": "1",
+        "congestionControl": "1",
+        "express": false,
+        "reliability": "1",
+        "allowedDestination": "",
+        "x": 840,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "f05dfabbbdba27cf",
+        "type": "debug",
+        "z": "e9b2b5b35b83c8d4",
+        "d": true,
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "9245f4025e770f47",
+        "type": "function",
+        "z": "e9b2b5b35b83c8d4",
+        "name": "get_new_values",
+        "func": "\nlet topic = msg.topic;\nlet buf, word1=0xFF, word2=0xFF;\nlet value = [];\nlet sent_value = [];\n\nlet address=0;\nlet quantity=0;\n\nfunction prepare_number()\n{\n    word1 = buf.readUInt16BE(0);\n    word2 = buf.readUInt16BE(2);\n\n    sent_value = [word1, word2];\n    quantity = 2;\n}\n\nswitch(topic)\n{\n\n    case \"car/controller/dpad/up_req\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 58;\n\n        break;\n\n\n    case \"car/controller/dpad/down_req\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 60;\n\n        break;\n\n    case \"car/controller/dpad/left_req\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 62;\n\n        break;\n\n    case \"car/controller/dpad/right_req\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 64;\n\n        break;\n\n    case \"car/controller/electromagnet_req\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 66;\n\n        break;\n\n    case \"car/controller/unload_req\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 68;\n\n        break;\n\n    case \"car/controller/load_req\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 70;\n\n        break;\n\n    case \"car/controller/remote_req\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 72;\n\n        break;\n\n    case \"car/conn_req_timeout\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeFloatBE(value, 0);\n        //buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 74;\n\n        break;\n\n    case \"car/movement\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 76;\n\n        break;\n\n    case \"car/controller/status\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 78;\n\n        break;\n\n    case \"car/controller/speed_req\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 80;\n\n        break;\n\n    case \"car/fault\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 82;\n\n        break;\n\n    case \"car/online\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 84;\n\n        break;\n\n    case \"SCADA/crane/speed_mode\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 86;\n\n        break;\n\n    case \"SCADA/crane/electromagnet\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 88;\n\n        break;\n\n    case \"SCADA/crane/allow_remote\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 90;\n\n        break;\n\n    case \"SCADA/crane/motor_horizontal/power\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 92;\n\n        break;\n\n    case \"SCADA/crane/motor_horizontal/velocity\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeFloatBE(value, 0);\n        prepare_number();\n\n        address = 94;\n\n        break;\n\n    case \"SCADA/crane/motor_horizontal/specified/distance\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeFloatBE(value, 0);\n        prepare_number();\n\n        address = 96;\n\n        break;\n\n    case \"SCADA/crane/motor_horizontal/specified/movement\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 98;\n\n        break;\n\n    case \"SCADA/crane/motor_horizontal/continuous\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 100;\n\n        break;\n\n    case \"SCADA/crane/motor_vertical/power\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 102;\n\n        break;\n\n    case \"SCADA/crane/motor_vertical/velocity\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeFloatBE(value, 0);\n        prepare_number();\n\n        address = 104;\n\n        break;\n\n    case \"SCADA/crane/motor_vertical/specified/distance\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeFloatBE(value, 0);\n        prepare_number();\n\n        address = 106;\n\n        break;\n\n    case \"SCADA/crane/motor_vertical/specified/movement\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 108;\n\n        break;\n\n    case \"SCADA/crane/motor_vertical/continuous\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 110;\n\n        break;\n\n    case \"SCADA/crane/control/up\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 112;\n\n        break;\n\n    case \"SCADA/crane/control/down\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 114;\n\n        break;\n\n    case \"SCADA/crane/control/left\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 116;\n\n        break;\n\n    case \"SCADA/crane/control/right\":\n        buf = Buffer.alloc(4);\n        value = Number(msg.payload.toString('utf8'));\n\n        buf.writeInt32BE(value, 0);\n        prepare_number();\n\n        address = 118;\n\n        break;\n\n    default:\n        return msg.payload = {};\n        break;\n\n}\n\nmsg.payload = {\n        \"fc\": 16,                   \n        \"unitid\": 1,                    \n        \"address\": address,    \n        \"quantity\": quantity, \n        \"value\": sent_value        \n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 480,
+        "wires": [
+            [
+                "1b9d894c1f349ba4",
+                "d9be75f0134a43b2"
+            ]
+        ]
+    },
+    {
+        "id": "d9be75f0134a43b2",
+        "type": "modbus-flex-write",
+        "z": "e9b2b5b35b83c8d4",
+        "name": "",
+        "showStatusActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "server": "788a76f2656f9651",
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 650,
+        "y": 480,
+        "wires": [
+            [
+                "212958341a22d5ad",
+                "460d3c76716cb9c8"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "212958341a22d5ad",
+        "type": "modbus-response",
+        "z": "e9b2b5b35b83c8d4",
+        "name": "",
+        "registerShowMax": 20,
+        "x": 910,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "bf85340bd3d44930",
+        "type": "zenoh-subscribe",
+        "z": "e9b2b5b35b83c8d4",
+        "name": "",
+        "session": "25a3b8f6216830a5",
+        "keyExpr": "**",
+        "allowedOrigin": "",
+        "x": 150,
+        "y": 640,
+        "wires": [
+            [
+                "62688edf5fdfd5d3"
+            ]
+        ]
+    },
+    {
+        "id": "62688edf5fdfd5d3",
+        "type": "debug",
+        "z": "e9b2b5b35b83c8d4",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 360,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "788a76f2656f9651",
+        "type": "modbus-client",
+        "name": "S7-Server",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "queueLogEnabled": false,
+        "failureLogEnabled": true,
+        "tcpHost": "192.168.0.1",
+        "tcpPort": "502",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyUSB",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "1",
+        "serialParity": "none",
+        "serialConnectionDelay": "100",
+        "serialAsciiResponseStartDelimiter": "0x3A",
+        "unit_id": "1",
+        "commandDelay": "1",
+        "clientTimeout": "1000",
+        "reconnectOnTimeout": true,
+        "reconnectTimeout": "2000",
+        "parallelUnitIdsAllowed": true,
+        "showWarnings": true,
+        "showLogs": true
+    },
+    {
+        "id": "25a3b8f6216830a5",
+        "type": "zenoh-session",
+        "locator": "ws://192.168.1.130:10000"
+    }
+]
