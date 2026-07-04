@@ -1,6 +1,8 @@
 # Licenta
 SISTEM INDUSTRIAL DE OPERARE ȘI MONITORIZARE A UNEI MACARALE SI A UNEI MASINI
 
+Scheme electrice + prezentare sistem: https://uptro29158-my.sharepoint.com/personal/eduard_bran_student_upt_ro/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Feduard%5Fbran%5Fstudent%5Fupt%5Fro%2FDocuments%2FLicenta&ga=1
+
 Environments used: Arduin IDE v2, VSCode, Node-RED, Ignition v8.3.2, Timebase Historian, TIA Portal
 
 Configuration steps:
